@@ -1,17 +1,14 @@
 <?xml version="1.0"?>
 <extension key="com.crusonweb.nynjtc.customreports" type="module">
   <file>customreports</file>
-  <name>FIXME</name>
-  <description>FIXME</description>
+  <name>NYNJTC Custom Reports</name>
+  <description>Generates custom reports/letters per advanced search or individual contact searches.  Letters may be rendered as PDF.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Steve Binkowski</author>
     <email>steve@binkcms.com</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">http://FIXME</url>
-    <url desc="Documentation">http://FIXME</url>
-    <url desc="Support">http://FIXME</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate>2017-05-06</releaseDate>
@@ -20,7 +17,7 @@
   <compatibility>
     <ver>4.7</ver>
   </compatibility>
-  <comments>This is a new, undeveloped module</comments>
+  <comments>Alpha version, not for production use.</comments>
   <civix>
     <namespace>CRM/Customreports</namespace>
   </civix>
