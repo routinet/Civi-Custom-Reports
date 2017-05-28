@@ -1,6 +1,7 @@
 <?php
 
 require_once 'customreports.civix.php';
+require_once 'CRM/Customreports/Helper.php';
 
 /**
  * Implements hook_civicrm_config().
@@ -123,6 +124,20 @@ function customreports_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 // --- Functions below this ship commented out. Uncomment as required. ---
+
+/**
+ * Implements hook_civicrm_searchTasks()
+ */
+function customreports_civicrm_searchTasks($objectType, &$tasks) {
+  H::log("checking searchTasks for $objectType");
+  if ( $objectType == 'contribution' ) {
+    $tasks[] = array(
+      'title' => ts('Custom Contribution Reports'),
+      'class' => 'CRM_Customreports_Form_Task_CustomreportsLanding',
+      'result' => FALSE,
+    );
+  }
+}
 
 /**
  * Implements hook_civicrm_preProcess().
