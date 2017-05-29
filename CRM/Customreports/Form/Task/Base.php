@@ -7,20 +7,22 @@
  * Time: 5:43 PM
  */
 class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
+
   protected $templateTitle = '';
+
   protected $templateName = '';
 
   public function getAllTokenDetails() {
-    $ret = array(
-      'contribution' => CRM_Utils_Token::getContributionTokenDetails($this->_contributionIds),
+    $ret = [
+      'contribution' => civicrm_api3('contribution', 'get', array('id' => array('IN' => $this->_contributionIds)))['values'],
       'contact'      => CRM_Utils_Token::getTokenDetails($this->_contactIds)[0],
-    );
+    ];
 
     return $ret;
   }
 
   public function getHtmlFromSmarty($tokens) {
-    $ret = array();
+    $ret = [];
 
     if (isset($tokens['contribution']) && isset($tokens['contact'])) {
       // Create a smarty template.
@@ -71,7 +73,7 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
    */
   public function preProcess() {
     H::log();
-    H::log('',true);
+    H::log('', TRUE);
     $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName);
     parent::preProcess();
     $this->setContactIDs();
@@ -84,7 +86,7 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
    *   array of default values
    */
   public function setDefaultValues() {
-    $defaults = array();
+    $defaults = [];
 
     return $defaults;
   }
