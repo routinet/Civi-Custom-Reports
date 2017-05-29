@@ -51,7 +51,6 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
    */
   public function postProcess() {
     H::log();
-    H::log("Using this template=\n" . var_export($this->template['msg_html'], 1));
 
     // Get all the token details for the records to be printed.
     $all_tokens = $this->getAllTokenDetails();
@@ -73,8 +72,16 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
    */
   public function preProcess() {
     H::log();
-    H::log('', TRUE);
-    $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName);
+
+    $form_values = $this->getSubmitValues();
+
+    // This will not be set unless the box was checked.
+    if (isset($form_values['import_flag'])) {
+      $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName, TRUE);
+    } else {
+      $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName);
+    }
+
     parent::preProcess();
     $this->setContactIDs();
   }

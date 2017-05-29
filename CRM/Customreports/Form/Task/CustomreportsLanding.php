@@ -31,7 +31,8 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
     );
 
     // Add the checkbox to force re-import of the template.
-    $this->addCheckbox('import_flag', 'Re-import from HTML template?', array('' => 1));
+    // TODO: I don't like how this renders.  Maybe use a lower-level generation?
+    $this->addCheckbox('import_flag', '', array('' => 1));
 
     // Add the standard buttons.
     $this->addButtons(array(
@@ -46,35 +47,6 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
       ),
     ));
   }
-
-  /**
-   * Handles an action.
-   *
-   * If an Action object was not registered here, controller's handle()
-   * method will be called.
-   *
-   * @access public
-   *
-   * @param  string Name of the action
-   *
-   * @throws PEAR_Error
-   */
-  /*  function handle($actionName)
-    {H::log();H::log("processing handle() for $actionName, quickform_page=\n".var_export($this,1));
-      if (isset($this->_actions[$actionName])) {
-        $ret = $this->_actions[$actionName]->perform($this, $actionName);
-      } else {
-        switch ($actionName) {
-          case 'customreportsimport':
-            die('y');
-            break;
-          default:
-            $ret = $this->controller->handle($this, $actionName);
-            break;
-        }
-      }
-      return $ret;
-    }*/
 
   /**
    * Process the form after the input has been submitted and validated.
@@ -99,10 +71,6 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
 
   public function preProcess() {
     H::log('');
-    /*$this->controller->addAction(
-      'customreportsimport',
-      new CRM_Customreports_QuickForm_Action_Import($this->controller->getStateMachine())
-    );*/
     parent::preProcess();
     $this->setContactIDs();
   }

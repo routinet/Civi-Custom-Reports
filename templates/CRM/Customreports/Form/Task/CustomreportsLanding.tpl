@@ -41,6 +41,7 @@
 
         #crm-customreports_import-flag {
             margin: 0 0 1.5em;
+            position: relative;
         }
 
         #crm-customreports_import-flag input {
@@ -60,7 +61,7 @@
         {/foreach}
     </div>
     <div id="crm-customreports_import-flag">
-        {$form.import_flag.label}{$form.import_flag.html}
+        <label for="import_flag_1">Re-import HTML template? {$form.import_flag.html}</label>
     </div>
     <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
