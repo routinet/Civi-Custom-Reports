@@ -1,11 +1,6 @@
 <?php
 /**
  * Helper class for customreports extension.
- *
- * Created by PhpStorm.
- * User: sbink
- * Date: 5/13/2017
- * Time: 3:50 PM
  */
 
 // This extension's name, for easy reference.

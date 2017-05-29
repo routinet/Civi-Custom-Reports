@@ -8,8 +8,8 @@
  */
 class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
 
+  // To be overwritten by child classes.
   protected $templateTitle = '';
-
   protected $templateName = '';
 
   public function getAllTokenDetails() {
@@ -75,14 +75,17 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
 
     $form_values = $this->getSubmitValues();
 
-    // This will not be set unless the box was checked.
+    // This will not be set unless the "re-import" box was checked.
     if (isset($form_values['import_flag'])) {
       $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName, TRUE);
     } else {
       $this->template = CRM_Customreports_Helper::fetchMessageTemplate($this->templateTitle, $this->templateName);
     }
 
+    // Call the parent preProcess().
     parent::preProcess();
+
+    // Make sure the contact IDs are populated.
     $this->setContactIDs();
   }
 
@@ -103,7 +106,8 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
     // Get the "standard" PDF format.
     $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfFormatName);
     $layout_format = json_decode($format['value']);
-    // Set the proper orientation based
+
+    // Set the proper orientation expected by TCPDF based on the format.
     $layout_format->tcpdf_orient = strtoupper(substr($layout_format->orientation, 0, 1));
     H::log("read pdf format=\n" . var_export($layout_format, 1));
 
@@ -119,6 +123,7 @@ class CRM_Customreports_Form_Task_Base extends CRM_Contribute_Form_Task {
     $pdf->SetMargins($layout_format->margin_left, $layout_format->margin_top, $layout_format->margin_right);
     $pdf->setPrintHeader(FALSE);
     $pdf->setPrintFooter(FALSE);
+    // TODO: font selection.
     $pdf->setFont('interstate-light');
 
     // Write the pages to the PDF.

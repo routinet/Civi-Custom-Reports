@@ -126,20 +126,6 @@ function customreports_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 // --- Functions below this ship commented out. Uncomment as required. ---
 
 /**
- * Implements hook_civicrm_searchTasks()
- */
-function customreports_civicrm_searchTasks($objectType, &$tasks) {
-  H::log("checking searchTasks for $objectType");
-  if ( $objectType == 'contribution' ) {
-    $tasks[] = array(
-      'title' => ts('Custom Contribution Reports'),
-      'class' => 'CRM_Customreports_Form_Task_CustomreportsLanding',
-      'result' => FALSE,
-    );
-  }
-}
-
-/**
  * Implements hook_civicrm_preProcess().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
@@ -164,3 +150,19 @@ function customreports_civicrm_navigationMenu(&$menu) {
   ));
   _customreports_civix_navigationMenu($menu);
 } // */
+
+// --- Functions below this were added for custom extension functionality.
+
+/**
+ * Implements hook_civicrm_searchTasks()
+ */
+function customreports_civicrm_searchTasks($objectType, &$tasks) {
+  H::log("checking searchTasks for $objectType");
+  if ( $objectType == 'contribution' ) {
+    $tasks[] = array(
+      'title' => ts('Custom Contribution Reports'),
+      'class' => 'CRM_Customreports_Form_Task_CustomreportsLanding',
+      'result' => FALSE,
+    );
+  }
+}

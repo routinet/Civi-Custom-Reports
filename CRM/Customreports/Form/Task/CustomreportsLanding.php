@@ -56,22 +56,31 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
    */
   public function postProcess() {
     H::log();
+
+    // Get the form values.  Looking for a report title.
     $form_values = $this->getSubmitValues();
     $report_title = CRM_Utils_Array::value('report_title', $form_values);
+
+    // If the requested letter is available, instantiate it and print it.
+    // Printing will end the request using CRM_Utils_System::civiExit(1).
     if (array_key_exists($report_title, CRM_Customreports_Helper::$all_reports)) {
       $report_class = 'CRM_Customreports_Form_Task_' . $report_title;
       $report = new $report_class();
       $report->controller = $this->controller;
       $report->handle('submit');
-      die('<pre>' . var_export($_POST, 1) . '</pre>');
-      die('W0OT! postprocess');
     }
+
+    // Fall through to the standard postProcess if not a custom letter.
     parent::postProcess();
   }
 
   public function preProcess() {
     H::log('');
+
+    // Call the parent preProcess().
     parent::preProcess();
+
+    // Make sure the contact IDs are populated.
     $this->setContactIDs();
   }
 

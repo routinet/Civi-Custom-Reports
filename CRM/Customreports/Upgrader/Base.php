@@ -43,7 +43,6 @@ class CRM_Customreports_Upgrader_Base {
    */
   static public function instance() {
     if (!self::$instance) {
-      // FIXME auto-generate
       self::$instance = new CRM_Customreports_Upgrader(
         'com.crusonweb.nynjtc.customreports',
         realpath(__DIR__ . '/../../../')
