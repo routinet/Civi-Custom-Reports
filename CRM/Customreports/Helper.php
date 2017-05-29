@@ -44,7 +44,7 @@ class CRM_Customreports_Helper {
     }
   }
 
-  public static function fetchMessageTemplate($title, $name, $import = TRUE) {
+  public static function fetchMessageTemplate($title, $name, $import = FALSE) {
     // Try to load the DAO object based on $title.
     $template = self::loadDAOTemplate($title);
 
