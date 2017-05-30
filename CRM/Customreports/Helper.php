@@ -10,10 +10,12 @@ define('CUSTOMREPORTS_EXT_NAME', 'com.crusonweb.nynjtc.customreports');
 define('CUSTOMREPORTS_LOGGER', 1);
 
 class CRM_Customreports_Helper {
+
   // An array of all report titles, keyed by template filename.
-  public static $all_reports = array(
-    'ContributionLetterStandard' => 'Contribution Letter - Standard',
-  );
+  public static $all_reports = [
+    'ContributionLetterStandard'   => 'Contribution Letter - Standard',
+    'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
+  ];
 
   // Contributions under this amount will have the digital signature assigned.
   public static $signatureMinimumAmount = 300;
@@ -81,19 +83,19 @@ class CRM_Customreports_Helper {
     }
 
     // Initialize a blank return, just in case.
-    $ret = array();
+    $ret = [];
 
     // If a title was found, save template.
     if ($save_as) {
       // Default blank template.
-      $template = array();
+      $template = [];
 
       // If the same title exists, reuse that record.
-      $params = array('msg_title' => $save_as);
+      $params = ['msg_title' => $save_as];
       CRM_Core_BAO_MessageTemplate::retrieve($params, $template);
 
       // Minimum fields to create the template.
-      $template['msg_title'] = $save_as;
+      $template['msg_title']   = $save_as;
       $template['msg_subject'] = $save_as;
 
       // If msg_html is set to a blank string, it gets a value of 'null'.
@@ -113,13 +115,13 @@ class CRM_Customreports_Helper {
   }
 
   public static function loadDAOTemplate($title) {
-    static $templates = array();
+    static $templates = [];
 
     H::log();
     // If the template has not been loaded yet, load it.
-    if (!$template = CRM_Utils_Array::value($title, $templates, array())) {
+    if (!$template = CRM_Utils_Array::value($title, $templates, [])) {
       // Search by the template title.
-      $params = array('msg_title' => $title);
+      $params = ['msg_title' => $title];
       CRM_Core_BAO_MessageTemplate::retrieve($params, $template);
 
       // If no template was found, $template will be an empty array.
@@ -152,8 +154,7 @@ class CRM_Customreports_Helper {
         $built_path = self::getAssetDir() . DIRECTORY_SEPARATOR . self::$signatureFile;
       }
       if (file_exists($built_path)) {
-        $relpath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $built_path);
-        $ret     = '<div id="digital-signature"><img src="' . $built_path . '" ' .
+        $ret = '<div id="digital-signature"><img src="' . $built_path . '" ' .
           'alt="Digital Signature" /></div>';
       }
     }

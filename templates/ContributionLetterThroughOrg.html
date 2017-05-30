@@ -1,0 +1,43 @@
+<p>{$smarty.now|date_format}</p>
+
+<p>{$contact.display_name}<br/>
+    {contact.street_address}<br/>
+    {contact.city}, {contact.state_province} {contact.postal_code}</p>
+
+<p>Dear {contact.first_name}:</p>
+
+<p>Thank you for your recent contribution through **organization**! Your
+    generosity provides the resources necessary for our 1,700+ volunteers to build upon and maintain a
+    vast network of trails in and around New York and New Jersey and to educate the public on the
+    responsible use of trails and the natural environment.</p>
+
+<p>Membership dues and the sale of Trail Conference maps, books, and other merchandise only partially
+    fund our work. We also rely on donations such as yours and those made by local businesses,
+    corporations, foundations, and our program partners.</p>
+
+<p>As you hike this magnificent region, you can proudly say that you are helping to keep it green, and that
+    you are part of the team that has built and continues to maintain over 2,100 miles of trails. Your
+    donation helps us invest in our people and services that preserve and enhance our natural
+    environment.</p>
+
+<p>With sincere thanks,</p>
+
+<p>{contribution.electronic_signature}</p>
+<p>Edward K. Goodell<br/>
+    Executive Director</p>
+
+<p>P.S. Keep your eye on our website for information about upcoming events, workshops,
+    and other trail related news!</p>
+
+<div>
+    --------------------------------------------------------------------------------------------<br/>
+    GIFT ACKNOWLEDGEMENT
+
+    <p>Gift Amount: {contribution.net_amount} through {contribution.soft_credit.1.contact_name}<br/>
+        Gift date: {contribution.receive_date}<br/>
+        Fund: {contribution.financial_type}</p>
+
+    <div style="font-size:.75em">The Trail Conference is a 501(c)(3) organization (FID#22-6042838). Please keep this
+        letter of acknowledgement with your tax records to provide to the IRS upon request.
+    </div>
+</div>
