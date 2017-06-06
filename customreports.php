@@ -157,12 +157,32 @@ function customreports_civicrm_navigationMenu(&$menu) {
  * Implements hook_civicrm_searchTasks()
  */
 function customreports_civicrm_searchTasks($objectType, &$tasks) {
+  H::log();
   H::log("checking searchTasks for $objectType");
-  if ( $objectType == 'contribution' ) {
-    $tasks[] = array(
-      'title' => ts('Custom Contribution Reports'),
-      'class' => 'CRM_Customreports_Form_Task_CustomreportsLanding',
-      'result' => FALSE,
-    );
+  switch ($objectType) {
+    case 'contribution':
+      $tasks[] = array(
+        'title' => ts('Custom Contribution Reports'),
+        'class' => 'CRM_Customreports_Form_Task_ContributionLanding',
+        'result' => FALSE,
+      );
+      break;
+    case 'membership':
+      // For some reason, this is getting called multiple time.  Make sure
+      // to only add it once.
+      $found = false;
+      foreach ($tasks as $val) {
+        if ($val['class'] == 'CRM_Customreports_Form_Task_MembershipLanding') {
+          $found = true;
+        }
+      }
+      if (!$found) {
+        $tasks[] = [
+          'title'  => ts('Custom Membership Reports'),
+          'class'  => 'CRM_Customreports_Form_Task_MembershipLanding',
+          'result' => FALSE,
+        ];
+      }
+      break;
   }
 }

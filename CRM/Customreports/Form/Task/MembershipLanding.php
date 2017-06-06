@@ -3,10 +3,12 @@
 /**
  * Write a custom report to a letter (PDF).
  */
-class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Form_Task {
+class CRM_Customreports_Form_Task_MembershipLanding extends CRM_Member_Form_Task {
+  public $context = 'membership';
 
   public function __construct($state = NULL, $action = CRM_Core_Action::NONE, $method = 'post', $name = NULL) {
     parent::__construct($state, $action, $method, $name);
+    H::log('dunno why this is here');
   }
 
   /**
@@ -19,13 +21,13 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
     H::log();
 
     // Set the form title.
-    CRM_Utils_System::setTitle(ts('Custom Contribution Reports'));
+    CRM_Utils_System::setTitle(ts('Custom ' . ucfirst($this->context) . ' Reports'));
 
     // Add the report selector.
     $this->addRadio(
       'report_title',
       'Please select a letter:',
-      CRM_Customreports_Helper::$all_reports,
+      CRM_Customreports_Helper::$all_reports[$this->context],
       array('required' => TRUE),
       TRUE
     );
@@ -38,7 +40,7 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
     $this->addButtons(array(
       array(
         'type'      => 'submit',
-        'name'      => ts('Process Contribution Letters'),
+        'name'      => ts('Process ' . ucfirst($this->context) . ' Letters'),
         'isDefault' => TRUE,
       ),
       array(
@@ -60,10 +62,12 @@ class CRM_Customreports_Form_Task_CustomreportsLanding extends CRM_Contribute_Fo
     // Get the form values.  Looking for a report title.
     $form_values = $this->getSubmitValues();
     $report_title = CRM_Utils_Array::value('report_title', $form_values);
-
+H::log("checking for $report_title");
+H::log("context= $this->context");
+H::log("report=\n".var_export(H::$all_reports[$this->context],1));
     // If the requested letter is available, instantiate it and print it.
     // Printing will end the request using CRM_Utils_System::civiExit(1).
-    if (array_key_exists($report_title, CRM_Customreports_Helper::$all_reports)) {
+    if (array_key_exists($report_title, CRM_Customreports_Helper::$all_reports[$this->context])) {
       $report_class = 'CRM_Customreports_Form_Task_' . $report_title;
       $report = new $report_class();
       $report->controller = $this->controller;

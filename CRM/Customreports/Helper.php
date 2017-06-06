@@ -7,16 +7,23 @@
 define('CUSTOMREPORTS_EXT_NAME', 'com.crusonweb.nynjtc.customreports');
 
 // Switch for logging function
+// TODO: turn this off
 define('CUSTOMREPORTS_LOGGER', 1);
 
 class CRM_Customreports_Helper {
 
-  // An array of all report titles, keyed by template filename.
+  // An array of all report contexts, whose members are keyed by template filename.
   public static $all_reports = [
-    'ContributionLetterStandard'   => 'Contribution Letter - Standard',
-    'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
+    'contribution' => [
+      'ContributionLetterStandard'   => 'Contribution Letter - Standard',
+      'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
+    ],
+    'membership'   => [
+      'MembershipNewWelcome' => 'Membership Letter - New Welcome',
+    ],
   ];
 
+  // TODO: migrate these into config items
   // Contributions under this amount will have the digital signature assigned.
   public static $signatureMinimumAmount = 300;
 
@@ -41,13 +48,13 @@ class CRM_Customreports_Helper {
     }
   }
 
-  public static function fetchMessageTemplate($title, $name, $import = FALSE) {
+  public static function fetchMessageTemplate($context, $title, $name, $import = FALSE) {
     // Try to load the DAO object based on $title.
     $template = self::loadDAOTemplate($title);
 
     // If no DAO template exists, try to import HTML.
     if (!$template || $import) {
-      $template = self::importTemplateFile($name, $title);
+      $template = self::importTemplateFile($context, $name, $title);
     }
 
     return $template;
@@ -72,18 +79,18 @@ class CRM_Customreports_Helper {
     return $extdir;
   }
 
-  public static function importTemplateFile($name, $save_as = '') {
+  public static function importTemplateFile($context, $name, $save_as = '') {
     // Load the HTML from the template file
     $html = self::loadHTMLTemplate($name);
 
-    // If no title was given, use the known title in $all_reports.
-    // If still no title is found, default to the template name.
-    if (!$save_as) {
-      $save_as = CRM_Utils_Array::value($name, self::$all_reports, $name);
-    }
-
     // Initialize a blank return, just in case.
     $ret = [];
+
+    // If no title was given, use the known title in $all_reports.
+    // If still no title is found, default to the template name.
+    if (!$save_as && $context && array_key_exists($context, self::$all_reports)) {
+      $save_as = CRM_Utils_Array::value($name, self::$all_reports[$context], $name);
+    }
 
     // If a title was found, save template.
     if ($save_as) {
@@ -163,5 +170,7 @@ class CRM_Customreports_Helper {
   }
 }
 
-// TODO: remove this?
-class_alias('CRM_Customreports_Helper', 'H');
+// Create an easy reference to the helper class is logging is turned on.
+if (CUSTOMREPORTS_LOGGER) {
+  class_alias('CRM_Customreports_Helper', 'H');
+}

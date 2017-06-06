@@ -201,6 +201,7 @@ class CRM_Customreports_Form_Report_FullContributionDetail extends CRM_Report_Fo
    * @return array
    */
   protected function getActions($instanceId) {
+    H::log('',true);
     // Get the standard actions.
     $actions = parent::getActions($instanceId);
 

@@ -2,7 +2,7 @@
 /**
  * Write a custom report to a letter (PDF).
  */
-class CRM_Customreports_Form_Task_ContributionLetterThroughOrg extends CRM_Customreports_Form_Task_Base {
+class CRM_Customreports_Form_Task_ContributionLetterThroughOrg extends CRM_Customreports_Form_Task_ContributeBase {
   protected $templateName = 'ContributionLetterThroughOrg';
   protected $templateTitle = 'Contribution Letter - Organization';
 
