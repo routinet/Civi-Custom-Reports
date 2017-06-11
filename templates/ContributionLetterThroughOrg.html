@@ -33,9 +33,13 @@
     --------------------------------------------------------------------------------------------<br/>
     GIFT ACKNOWLEDGEMENT
 
-    <p>Gift Amount: {contribution.net_amount} through {contribution.soft_credit.1.contact_name}<br/>
-        Gift date: {contribution.receive_date}<br/>
-        Fund: {contribution.financial_type}</p>
+    <p>Gift Amount: ${contribution.net_amount} through {contribution.soft_credit.1.contact_name}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {contribution.financial_type}<br />
+        {if $contribution.financial_type == 'Restricted'}
+        Note: {contribution.contribution_note}
+        {/if}
+    </p>
 
     <div style="font-size:.75em">The Trail Conference is a 501(c)(3) organization (FID#22-6042838). Please keep this
         letter of acknowledgement with your tax records to provide to the IRS upon request.

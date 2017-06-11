@@ -30,9 +30,12 @@
 <div>
     --------------------------------------------------------------------------------------------<br/>
     GIFT RECEIPT
-    <p>Gift: {contribution.premium}<br/>Gift amount: {contribution.net_amount}<br/>Gift date:
-        {contribution.receive_date}<br/>Fund : {contribution.financial_type}<br/>Matching Gift Company:
-        {contribution.custom_40}</p>
+    <div>Premium: {$contribution.product_name|default:"None"}<br/>
+        Gift amount: ${$contribution.net_amount|string_format:"%.2f"}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {$contribution.financial_type}<br/>
+        Matching Gift Company: {if $contribution.custom_40 == 'Y'}Yes{/if}{if $contribution.custom_40 != 'Y'}No{/if}
+    </div>
 
     <div style="font-size:.75em">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
         is tax-deductible.<br/>
