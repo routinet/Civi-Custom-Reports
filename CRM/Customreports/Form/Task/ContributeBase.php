@@ -15,30 +15,66 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
   protected $context = 'contribution';
 
+  public $tokens = [];
+
+  /**
+   * To be overwritten by child classes for letter-specific token customization.
+   */
+  public function customizeTokenDetails() {
+
+  }
+
+  /**
+   * Macro function to grab all tokens.
+   */
   public function getAllTokenDetails() {
-    $ret = [
+    $this->getBaseTokens();
+    $this->customizeTokenDetails();
+  }
+
+  /**
+   * Populate the "base" tokens.  One section for context, and one section
+   * for the primary contact.  Other sections, e.g., soft contribution
+   * contact, should be done in customizeTokenDetails().
+   */
+  public function getBaseTokens() {
+    $this->tokens = [
       'component' => civicrm_api3($this->context, 'get', ['id' => ['IN' => $this->_componentIds]])['values'],
       'contact'   => CRM_Utils_Token::getTokenDetails($this->_contactIds)[0],
     ];
-
-    return $ret;
   }
 
-  public function getHtmlFromSmarty($tokens) {
+  /**
+   * Render final HTML output based on the configured template file, and the
+   * loaded tokens.
+   *
+   * @return array rendered HTML documents for each component ID.
+   */
+  public function getHtmlFromSmarty() {
+    static $print = FALSE;
     $ret = [];
 
-    if (isset($tokens['component']) && isset($tokens['contact'])) {
+    if (isset($this->tokens['component']) && isset($this->tokens['contact'])) {
       // Create a smarty template.
-      $smarty = CRM_Core_Smarty::singleton();
+      $smarty           = CRM_Core_Smarty::singleton();
+      $smarty->security = FALSE;
 
       // Prep the template for smarty parsing.
       $prep_template = preg_replace('/\\{([a-z0-9._]+)\\}/i', '{\\$$1}', $this->template['msg_html']);
 
       // Generate an HTML page for each contribution row.
-      foreach ($tokens['component'] as $id => &$row) {
+      foreach ($this->tokens['component'] as $id => &$row) {
+        if (!$print) {
+          H::log("writing context {$this->context}");
+          H::log("component tokens=\n" . var_export($row, 1));
+          H::log("contact tokens=\n" . var_export($this->tokens['contact'][$row['contact_id']], 1));
+          $print = TRUE;
+        }
         $row['electronic_signature'] = CRM_Customreports_Helper::renderSignature($row);
+        //$row['custom_40'] = $row['custom_40'] == 'Y' ? 'Yes' : 'No';
+        //$row['custom_40'] = 'Y';
         $smarty->assign_by_ref($this->context, $row);
-        $smarty->assign_by_ref('contact', $tokens['contact'][$row['contact_id']]);
+        $smarty->assign_by_ref('contact', $this->tokens['contact'][$row['contact_id']]);
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }
     }
@@ -48,20 +84,17 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
   /**
    * Process the form after the input has been submitted and validated.
-   *
-   *
-   * @return void
    */
   public function postProcess() {
     H::log();
 
     // Get all the token details for the records to be printed.
-    $all_tokens = $this->getAllTokenDetails();
+    $this->getAllTokenDetails();
 
     // Create an array to hold all the rendered pages.  Note that this
     // could have pretty high memory requirements.  We may need to figure
     // out alternatives.
-    $html = $this->getHtmlFromSmarty($all_tokens);
+    $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
     $this->writePDF($html);
@@ -70,8 +103,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
   /**
    * Build all the data structures needed to build the form.
-   *
-   * @return void
    */
   public function preProcess() {
     H::log();
@@ -79,21 +110,13 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $form_values = $this->getSubmitValues();
 
     // This will not be set unless the "re-import" box was checked.
-    if (isset($form_values['import_flag'])) {
-      $this->template = CRM_Customreports_Helper::fetchMessageTemplate(
-        $this->context,
-        $this->templateTitle,
-        $this->templateName,
-        TRUE
-      );
-    }
-    else {
-      $this->template = CRM_Customreports_Helper::fetchMessageTemplate(
-        $this->context,
-        $this->templateTitle,
-        $this->templateName
-      );
-    }
+    $import         = isset($form_values['import_flag']) && (boolean) $form_values['import_flag'];
+    $this->template = CRM_Customreports_Helper::fetchMessageTemplate(
+      $this->context,
+      $this->templateTitle,
+      $this->templateName,
+      $import
+    );
 
     // Call the parent preProcess().
     parent::preProcess();
@@ -114,6 +137,12 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     return $defaults;
   }
 
+  /**
+   * Write an array of HTML documents into a PDF file, one to a page.  After
+   * compiling the file, push it to the response and exit.
+   *
+   * @param $html array of rendered HTML pages.
+   */
   public function writePDF($html) {
     // Add all the HTML pages to a PDF.
     // Get the "standard" PDF format.
