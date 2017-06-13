@@ -1,12 +1,15 @@
 <?php
 
 /**
- * Custom report definition used as the datasource for Contribution
+ * Custom report definition used as the datasource for Membership
  * letters added by this extension.
  */
 class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form {
+
   public $_actionName = 'standard_letter';
+
   public $_actionLabel = 'Print Standard Letters (PDF)';
+
   public $_actionFilename = 'Membership-Letter-Standard';
 
   /**
@@ -29,7 +32,8 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
   }
 
   /**
-   * Build the report query.
+   * Build the report query.  We force the limit to FALSE.  This report is
+   * meant to be all-inclusive based on search terms or ID list.
    *
    * @param bool $applyLimit
    *
@@ -125,8 +129,8 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "civicrm_relationship rel INNER JOIN civicrm_relationship_type rel_type " .
       "ON rel.relationship_type_id=rel_type.id AND rel_type.name_a_b='Provides Membership To'" .
       ") ON rel.contact_id_a = {$this->_aliases['civicrm_contact']}.id " .
-      "LEFT JOIN civicrm_contact second_contact_civireport " .
-      "ON second_contact_civireport.id = rel.contact_id_b";
+      "LEFT JOIN civicrm_contact {$this->_aliases['civicrm_secondcontact']} " .
+      "ON {$this->_aliases['civicrm_secondcontact']}.id = rel.contact_id_b";
   }
 
   /**
@@ -171,7 +175,7 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       }
     }
 
-    $this->_params['group_bys'] = array('membership_id' => '1');
+    $this->_params['group_bys'] = ['membership_id' => '1'];
 
     // Set the "order by" options.
     $this->_params['order_bys'] = [
@@ -236,9 +240,9 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
         ],
         'grouping' => 'contact-fields',
       ],
-      'second_contact'            => [
+      'civicrm_secondcontact'     => [
         'dao'      => 'CRM_Contact_DAO_Contact',
-        'alias'    => 'second_contact',
+        'alias'    => 'civicrm_secondcontact',
         'fields'   => [
           'second_id'               => [
             'name'     => 'id',
@@ -394,10 +398,10 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       'civicrm_membership'        => [
         'dao'       => 'CRM_Member_DAO_Membership',
         'fields'    => [
-          'membership_id' => [
-            'title' => ts("Membership ID"),
+          'membership_id'         => [
+            'title'    => ts("Membership ID"),
             'required' => TRUE,
-            'name' => 'id',
+            'name'     => 'id',
           ],
           'membership_type_id'    => [
             'title'    => ts('Membership Type ID'),

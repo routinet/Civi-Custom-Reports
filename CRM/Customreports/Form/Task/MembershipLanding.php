@@ -4,12 +4,8 @@
  * Write a custom report to a letter (PDF).
  */
 class CRM_Customreports_Form_Task_MembershipLanding extends CRM_Member_Form_Task {
-  public $context = 'membership';
 
-  public function __construct($state = NULL, $action = CRM_Core_Action::NONE, $method = 'post', $name = NULL) {
-    parent::__construct($state, $action, $method, $name);
-    H::log('dunno why this is here');
-  }
+  public $context = 'membership';
 
   /**
    * Build the form object.
@@ -28,26 +24,26 @@ class CRM_Customreports_Form_Task_MembershipLanding extends CRM_Member_Form_Task
       'report_title',
       'Please select a letter:',
       CRM_Customreports_Helper::$all_reports[$this->context],
-      array('required' => TRUE),
+      ['required' => TRUE],
       TRUE
     );
 
     // Add the checkbox to force re-import of the template.
     // TODO: I don't like how this renders.  Maybe use a lower-level generation?
-    $this->addCheckbox('import_flag', '', array('' => 1));
+    $this->addCheckbox('import_flag', '', ['' => 1]);
 
     // Add the standard buttons.
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type'      => 'submit',
         'name'      => ts('Process ' . ucfirst($this->context) . ' Letters'),
         'isDefault' => TRUE,
-      ),
-      array(
+      ],
+      [
         'type' => 'cancel',
         'name' => ts('Done'),
-      ),
-    ));
+      ],
+    ]);
   }
 
   /**
@@ -60,16 +56,14 @@ class CRM_Customreports_Form_Task_MembershipLanding extends CRM_Member_Form_Task
     H::log();
 
     // Get the form values.  Looking for a report title.
-    $form_values = $this->getSubmitValues();
+    $form_values  = $this->getSubmitValues();
     $report_title = CRM_Utils_Array::value('report_title', $form_values);
-H::log("checking for $report_title");
-H::log("context= $this->context");
-H::log("report=\n".var_export(H::$all_reports[$this->context],1));
+
     // If the requested letter is available, instantiate it and print it.
     // Printing will end the request using CRM_Utils_System::civiExit(1).
     if (array_key_exists($report_title, CRM_Customreports_Helper::$all_reports[$this->context])) {
-      $report_class = 'CRM_Customreports_Form_Task_' . $report_title;
-      $report = new $report_class();
+      $report_class       = 'CRM_Customreports_Form_Task_' . $report_title;
+      $report             = new $report_class();
       $report->controller = $this->controller;
       $report->handle('submit');
     }
@@ -95,7 +89,7 @@ H::log("report=\n".var_export(H::$all_reports[$this->context],1));
    *   array of default values
    */
   public function setDefaultValues() {
-    $defaults = array();
+    $defaults = [];
 
     return $defaults;
   }

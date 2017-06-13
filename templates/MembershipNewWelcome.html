@@ -6,8 +6,10 @@
 
 <p>Dear {contact.first_name}:</p>
 
-<p>Welcome to the New York-New Jersey Trail Conference, and thank you for supporting us with your ${membership.type_minimum_fee}
-    {membership.type_membership_type_name} membership. Your membership helps to support our many programs and projects aimed at
+<p>Welcome to the New York-New Jersey Trail Conference, and thank you for supporting us with your
+    ${membership.type_minimum_fee}
+    {membership.type_membership_type_name} membership. Your membership helps to support our many programs and projects
+    aimed at
     building and maintaining trails and helping people use and enjoy the backcountry in a responsible manner.</p>
 
 <p>As you hike this magnificent region, you can proudly say that you are helping to keep it green, and that you are a
@@ -24,13 +26,15 @@
 
 <p>Executive Director</p>
 
-<div style="font-size:.75em">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
+<div style="font-size:.75em;">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
     is tax-deductible.<br/>
     No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
     contribution.<br/>
     Please keep this letter of acknowledgment with your tax records to provide to the IRS upon request.
-</div>
-
-Card1              card2
-Name
-ContactID?      Date started
+</div><br/><br/>
+<table>
+    <tr>
+        <td>{contact.display_name}<br/>{membership.membership_id}<br/>{membership.membership_end_date}</td>
+        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{membership.membership_end_date}</td>
+    </tr>
+</table>
