@@ -17,31 +17,77 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
   public $tokens = [];
 
+  public $report_data = [];
+
   /**
    * To be overwritten by child classes for letter-specific token customization.
    */
   public function customizeTokenDetails() {
-
+    H::log();
+    $this->loadSoftCreditContacts();
   }
 
   /**
    * Macro function to grab all tokens.
    */
   public function getAllTokenDetails() {
+    H::log();
     $this->getBaseTokens();
     $this->customizeTokenDetails();
   }
 
   /**
    * Populate the "base" tokens.  One section for context, and one section
-   * for the primary contact.  Other sections, e.g., soft contribution
-   * contact, should be done in customizeTokenDetails().
+   * for the primary contact.
    */
   public function getBaseTokens() {
-    $this->tokens = [
-      'component' => civicrm_api3($this->context, 'get', ['id' => ['IN' => $this->_componentIds]])['values'],
-      'contact'   => CRM_Utils_Token::getTokenDetails($this->_contactIds)[0],
+    // Initialize tokens.  Contact tokens are loaded from the token system,
+    // since _contactIds is conveniently populated with soft contact IDs also.
+    $tokenized = [
+      'component' => [],
+      'contact' => CRM_Utils_Token::getTokenDetails($this->_contactIds, NULL, FALSE, FALSE)[0],
     ];
+
+    // For each contribution row...
+    foreach ($this->report_data as $contribution_key => $contribution_row) {
+      // Get some easy references to the ID fields.
+      $contact_id   = $contribution_row['civicrm_contact_id'];
+      $component_id = $contribution_row['civicrm_contribution_contribution_id'];
+
+      // For each field in the row, add the component fields to our token list.
+      // We ignore the contact fields, since they have already been loaded by
+      // the initialization getTokenDetails().
+      foreach ($contribution_row as $field => $value) {
+        $matches = [];
+        preg_match('/^civicrm_([^_]+)_(.*)/', $field, $matches);
+        switch ($matches[1]) {
+          // We're not actually using the contact info...we load tokens a little later
+          /*
+          case 'contact':
+          case 'email':
+          case 'phone':
+          case 'address':
+            $tokenized['contact'][$contact_id][$matches[2]] = $value;
+            break; */
+          case 'financialtype':
+          case 'contribution':
+          case 'note':
+            $tokenized['component'][$component_id][$matches[2]] = $value;
+            break;
+          case 'value':
+            // custom fields belong to the component
+            $second_find = $matches[2];
+            $matches     = [];
+            preg_match('/[a-zA-Z0-9_]+_[0-9]+_([a-zA-Z0-9_]+)/', $second_find, $matches);
+            $tokenized['component'][$component_id][$matches[1]] = $value;
+            break;
+        }
+      }
+      // The contact ID is only found in the contact data.  Add it to component as well.
+      $tokenized['component'][$component_id]['contact_id'] = $contact_id;
+    }
+
+    $this->tokens = $tokenized;
   }
 
   /**
@@ -51,7 +97,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
    * @return array rendered HTML documents for each component ID.
    */
   public function getHtmlFromSmarty() {
-    static $print = FALSE;
+    H::log();
     $ret = [];
 
     if (isset($this->tokens['component']) && isset($this->tokens['contact'])) {
@@ -64,17 +110,21 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
       // Generate an HTML page for each contribution row.
       foreach ($this->tokens['component'] as $id => &$row) {
-        if (!$print) {
-          H::log("writing context {$this->context}");
-          H::log("component tokens=\n" . var_export($row, 1));
-          H::log("contact tokens=\n" . var_export($this->tokens['contact'][$row['contact_id']], 1));
-          $print = TRUE;
-        }
+        // Set the electronic signature token
         $row['electronic_signature'] = CRM_Customreports_Helper::renderSignature($row);
-        //$row['custom_40'] = $row['custom_40'] == 'Y' ? 'Yes' : 'No';
-        //$row['custom_40'] = 'Y';
-        $smarty->assign_by_ref($this->context, $row);
-        $smarty->assign_by_ref('contact', $this->tokens['contact'][$row['contact_id']]);
+
+        // Set the component tokens
+        $smarty->assign($this->context, $row);
+
+        // Set the primary contact tokens
+        $smarty->assign('contact', $this->tokens['contact'][$row['contact_id']]);
+
+        // If a soft credit contact is available, set it also
+        if (!empty($row['primary_soft_contact'])) {
+          $smarty->assign('soft_contact', $this->tokens['contact'][$row['primary_soft_contact']]);
+        }
+
+        // Add the Smarty-parsed template to the return array
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }
     }
@@ -82,11 +132,73 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     return $ret;
   }
 
+  public function loadReportData() {
+    H::log();
+
+    // Get the report instance
+    $report = new CRM_Customreports_Form_Report_FullContributionDetail();
+
+    // Set the filter to use contribution IDs as passed to this form.
+    $report->modifyParams('contribution_id_op', 'in');
+    $report->modifyParams('contribution_id_value', $this->_componentIds);
+
+    // Make sure the report is not expecting a controller.
+    $report->noController = TRUE;
+
+    // Let the report do its magic.
+    $report->preProcess();
+
+    // build query
+    $sql = $report->buildQuery();
+
+    // build array of result based on column headers. This method also allows
+    // modifying column headers before using it to build result set i.e $rows.
+    $this->report_data = [];
+    $report->buildRows($sql, $this->report_data);
+
+    // format result set.
+    $report->formatDisplay($this->report_data, FALSE);
+  }
+
+  public function loadSoftCreditContacts() {
+
+    // An array of soft credit contact IDs not already loaded.
+    $extra_ids = [];
+
+    // Get the soft credits for these contributions.
+    $IDs   = implode(',', $this->_componentIds);
+    $query = "SELECT contribution_id, contact_id FROM civicrm_contribution_soft WHERE contribution_id IN ( $IDs )";
+    $dao = CRM_Core_DAO::executeQuery($query);
+
+    // For each contact, see if it is loaded.  If not, add it to the list.
+    // Also, note the *first* contact as the "primary".
+    while ($dao->fetch()) {
+      if (!isset($this->tokens['component'][$dao->contribution_id]['soft_credit_ids'])) {
+        $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'] = [];
+        $this->tokens['component'][$dao->contribution_id]['primary_soft_contact'] = $dao->contact_id;
+      }
+      if (!in_array($dao->contact_id, $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'])) {
+        $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'][] = $dao->contact_id;
+      }
+      if (!in_array($dao->contact_id, $this->tokens['contact'])) {
+        $extra_ids[] = $dao->contact_id;
+      }
+    }
+
+    // If we need to load more contacts, do that now.
+    if (count($extra_ids)) {
+      $this->tokens['contact'] += CRM_Utils_Token::getTokenDetails($extra_ids, NULL, FALSE, FALSE)[0];
+    }
+  }
+
   /**
    * Process the form after the input has been submitted and validated.
    */
   public function postProcess() {
     H::log();
+
+    // Load the report data
+    $this->loadReportData();
 
     // Get all the token details for the records to be printed.
     $this->getAllTokenDetails();
@@ -126,6 +238,27 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
   }
 
   /**
+   * Given the contribution id, compute the contact id
+   * since its used for things like send email
+   *
+   * Overwritten to allow for loading soft contribution contacts.
+   */
+  public function setContactIDs() {
+    $queryParams       = $this->get('queryParams');
+    $use_soft_contacts = CRM_Contribute_BAO_Query::isSoftCreditOptionEnabled($queryParams);
+
+    if ($use_soft_contacts) {
+      $this->_contactIds = &CRM_Core_DAO::getContactIDsFromComponent(
+        $this->_contributionIds,
+        'contribution_search_scredit_combined'
+      );
+    }
+    else {
+      parent::setContactIDs();
+    }
+  }
+
+  /**
    * Set default values for the form.
    *
    * @return array
@@ -151,7 +284,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     // Set the proper orientation expected by TCPDF based on the format.
     $layout_format->tcpdf_orient = strtoupper(substr($layout_format->orientation, 0, 1));
-    H::log("read pdf format=\n" . var_export($layout_format, 1));
 
     // Set the custom margins.
     // TODO: This should be in the loaded PDF format.  Can worry about it later.
