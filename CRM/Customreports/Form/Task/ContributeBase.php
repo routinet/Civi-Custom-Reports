@@ -61,14 +61,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
         $matches = [];
         preg_match('/^civicrm_([^_]+)_(.*)/', $field, $matches);
         switch ($matches[1]) {
-          // We're not actually using the contact info...we load tokens a little later
-          /*
-          case 'contact':
-          case 'email':
-          case 'phone':
-          case 'address':
-            $tokenized['contact'][$contact_id][$matches[2]] = $value;
-            break; */
           case 'financialtype':
           case 'contribution':
           case 'note':
@@ -103,7 +95,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     if (isset($this->tokens['component']) && isset($this->tokens['contact'])) {
       // Create a smarty template.
       $smarty           = CRM_Core_Smarty::singleton();
-      $smarty->security = FALSE;
 
       // Prep the template for smarty parsing.
       $prep_template = preg_replace('/\\{([a-z0-9._]+)\\}/i', '{\\$$1}', $this->template['msg_html']);
@@ -247,6 +238,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $queryParams       = $this->get('queryParams');
     $use_soft_contacts = CRM_Contribute_BAO_Query::isSoftCreditOptionEnabled($queryParams);
 
+    // If soft contacts are used, this populates _contactIds with the actual
+    // contact IDs for the contributions, as well as the contact IDs for
+    // any soft credits.
     if ($use_soft_contacts) {
       $this->_contactIds = &CRM_Core_DAO::getContactIDsFromComponent(
         $this->_contributionIds,
