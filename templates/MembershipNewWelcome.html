@@ -1,4 +1,4 @@
-<p>{$smarty.now|date_format}</p>
+<p>{$membership.receive_date|date_format}</p>
 
 <p>{$contact.first_name} {$contact.last_name}<br/>
     {contact.street_address}<br/>
@@ -7,7 +7,7 @@
 <p>Dear {contact.first_name}:</p>
 
 <p>Welcome to the New York-New Jersey Trail Conference, and thank you for supporting us with your
-    ${membership.type_minimum_fee}
+    ${$membership.sum_total_amount|string_format:"%.2f"}
     {membership.type_membership_type_name} membership. Your membership helps to support our many programs and projects
     aimed at
     building and maintaining trails and helping people use and enjoy the backcountry in a responsible manner.</p>
@@ -17,12 +17,12 @@
 
 <p>The real benefit of membership in the Trail Conference is the opportunity to get out into nature, visit your favorite
     park, or take a walk on the trail of your choice. Your investment in us helps us invest in our people and services
-    that preserve and enchance the natural environment.</p>
+    that preserve and enhance the natural environment.</p>
 
 <p>Happy trails!</p>
 
 
-<p>{component.electronic_signature}</p>
+<p>{membership.electronic_signature}</p>
 
 <p>Executive Director</p>
 
@@ -34,7 +34,7 @@
 </div><br/><br/>
 <table>
     <tr>
-        <td>{contact.display_name}<br/>{membership.membership_id}<br/>{membership.membership_end_date}</td>
-        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{membership.membership_end_date}</td>
+        <td>{contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}</td>
+        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}</td>
     </tr>
 </table>

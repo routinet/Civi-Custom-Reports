@@ -118,6 +118,8 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
           $smarty->assign('second_contact', $this->tokens['contact'][$row['second_contact_id']]);
         }
 
+        // TODO: For debugging
+        //H::log("all tokens=\n".var_export($this->tokens,1));
         // Add the Smarty-parsed template to the return array
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }

@@ -505,6 +505,10 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
             'title'    => ts('Sum Total Amt'),
             'required' => TRUE,
           ],
+          'receive_date'     => [
+            'title'    => 'Receive Date',
+            'required' => TRUE,
+          ],
         ],
         'grouping' => 'member-fields',
       ],
