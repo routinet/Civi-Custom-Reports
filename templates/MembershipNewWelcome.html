@@ -35,6 +35,9 @@
 <table>
     <tr>
         <td>{contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}</td>
-        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}</td>
+        {if !empty($second_contact.display_name)}
+        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}
+        </td>
+        {/if}
     </tr>
 </table>

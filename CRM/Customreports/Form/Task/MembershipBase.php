@@ -117,6 +117,9 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
         if (!empty($row['second_contact_id'])) {
           $smarty->assign('second_contact', $this->tokens['contact'][$row['second_contact_id']]);
         }
+        else {
+          $smarty->assign('second_contact', "");
+        }
 
         // TODO: For debugging
         //H::log("all tokens=\n".var_export($this->tokens,1));
@@ -244,7 +247,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
     );
 
     // Merge them into the list of contact IDs.
-    $this->_contactIds = array_merge($this->_contactIds, $ret);
+    $this->_contactIds = array_merge($this->_contactIds, array_filter($ret));
   }
 
   /**
