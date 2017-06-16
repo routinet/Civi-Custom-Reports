@@ -63,6 +63,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
         switch ($matches[1]) {
           case 'financialtype':
           case 'contribution':
+          case 'product':
           case 'note':
             $tokenized['component'][$component_id][$matches[2]] = $value;
             break;

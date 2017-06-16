@@ -113,7 +113,13 @@ class CRM_Customreports_Form_Report_FullContributionDetail extends CRM_Report_Fo
       // Contribution Note
       "LEFT JOIN civicrm_note {$this->_aliases['civicrm_note']} " .
       "ON {$this->_aliases['civicrm_contribution']}.id = {$this->_aliases['civicrm_note']}.entity_id " .
-      "AND {$this->_aliases['civicrm_note']}.entity_table = 'civicrm_contribution' ";
+      "AND {$this->_aliases['civicrm_note']}.entity_table = 'civicrm_contribution' " .
+
+      // Premiums
+      "LEFT JOIN civicrm_contribution_product premiums " .
+      "ON premiums.contribution_id = {$this->_aliases['civicrm_contribution']}.id " .
+      "LEFT JOIN civicrm_product {$this->_aliases['civicrm_product']} " .
+      "ON premiums.product_id = {$this->_aliases['civicrm_product']}.id ";
 
   }
 
@@ -484,6 +490,24 @@ class CRM_Customreports_Form_Report_FullContributionDetail extends CRM_Report_Fo
           ],
         ],
 
+      ],
+      'civicrm_product' => [
+        'dao' => 'CRM_Contribute_DAO_Product',
+        'fields' => [
+          'product_name' => [
+            'title' => 'Premium Name',
+            'name' => 'name',
+            'default' => TRUE,
+            'required' => TRUE,
+          ],
+          'product_description' => [
+            'title' => 'Premium Description',
+            'name'=>'description',
+            'default' => TRUE,
+            'required' => TRUE,
+          ],
+        ],
+        'grouping' => 'contribution-fields',
       ],
       'civicrm_financialtype' => [
         'dao'        => 'CRM_Financial_DAO_FinancialType',
