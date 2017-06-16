@@ -63,6 +63,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
         switch ($matches[1]) {
           case 'membership':
           case 'contribution':
+          case 'membershipstatus':
             $tokenized['component'][$component_id][$matches[2]] = $value;
             break;
           case 'value':
@@ -101,6 +102,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
 
       // Prep the template for smarty parsing.
       $prep_template = preg_replace('/\\{([a-z0-9._]+)\\}/i', '{\\$$1}', $this->template['msg_html']);
+      H::log("all tokens=\n".var_export($this->tokens,1));
 
       // Generate an HTML page for each contribution row.
       foreach ($this->tokens['component'] as $id => &$row) {

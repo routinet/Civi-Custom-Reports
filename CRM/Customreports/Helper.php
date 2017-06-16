@@ -19,7 +19,7 @@ class CRM_Customreports_Helper {
       'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
     ],
     'membership'   => [
-      'MembershipNewWelcome' => 'Membership Letter - New Welcome',
+      'MembershipGeneral' => 'Membership - New/Renew/Return',
     ],
   ];
 

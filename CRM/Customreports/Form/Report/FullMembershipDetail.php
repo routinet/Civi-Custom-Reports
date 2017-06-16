@@ -96,8 +96,8 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_membership']}.contact_id " .
 
       // Membership_Status
-      "INNER JOIN civicrm_membership_status {$this->_aliases['civicrm_membership_status']} " .
-      "ON {$this->_aliases['civicrm_membership_status']}.id = {$this->_aliases['civicrm_membership']}.status_id " .
+      "INNER JOIN civicrm_membership_status {$this->_aliases['civicrm_membershipstatus']} " .
+      "ON {$this->_aliases['civicrm_membershipstatus']}.id = {$this->_aliases['civicrm_membership']}.status_id " .
 
       // Membership_Payment, a many-to-many table for memberships and contributions
       "LEFT JOIN civicrm_membership_payment mem_payment " .
@@ -456,11 +456,13 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
         ],
         'grouping'  => 'member-fields',
       ],
-      'civicrm_membership_status' => [
+      'civicrm_membershipstatus' => [
         'dao'      => 'CRM_Member_DAO_MembershipStatus',
-        'alias'    => 'mem_status',
+        'dbAlias'    => 'memstatus',
+        'alias' => 'mem_status',
+        'table' => 'civicrm_membership_status',
         'fields'   => [
-          'membership_status_name' => [
+          'status_name' => [
             'name'     => 'name',
             'title'    => ts('Membership Status'),
             'default'  => TRUE,

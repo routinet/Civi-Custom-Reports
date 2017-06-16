@@ -6,11 +6,14 @@
 
 <p>Dear {contact.first_name}:</p>
 
-<p>Welcome to the New York-New Jersey Trail Conference, and thank you for supporting us with your
+<p>{if $membership.status_name == 'Current'}Thank you for continuing to support the work of the New York-New Jersey Trail Conference
+    {/if}{if $membership.status_name == 'New'}Welcome to the New York-New Jersey Trail Conference, and thank you for supporting us
+    {/if}{if $membership.status_name == 'Returning'}Welcome back to the New York-New Jersey Trail Conference, and thank you for supporting us
+    {/if}
+    with your
     ${$membership.sum_total_amount|string_format:"%.2f"}
     {membership.type_membership_type_name} membership. Your membership helps to support our many programs and projects
-    aimed at
-    building and maintaining trails and helping people use and enjoy the backcountry in a responsible manner.</p>
+    aimed at building and maintaining trails and helping people use and enjoy the backcountry in a responsible manner.</p>
 
 <p>As you hike this magnificent region, you can proudly say that you are helping to keep it green, and that you are a
     member of the team that has built and maintains over 2,100 miles of trails.</p>
@@ -21,16 +24,15 @@
 
 <p>Happy trails!</p>
 
-
 <p>{membership.electronic_signature}</p>
 
-<p>Executive Director</p>
+<p>Edward K. Goodell<br />Executive Director</p>
 
-<div style="font-size:.75em;">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
+<div style="font-size:.75em;">The Trail Conference is a 501(c)3 organization. The entire amount of your membership dues
     is tax-deductible.<br/>
     No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
     contribution.<br/>
-    Please keep this letter of acknowledgment with your tax records to provide to the IRS upon request.
+    Please keep this letter of acknowledgment with your tax records.
 </div><br/><br/>
 <table>
     <tr>
