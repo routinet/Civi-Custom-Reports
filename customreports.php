@@ -1,6 +1,8 @@
 <?php
 
 require_once 'customreports.civix.php';
+
+// Make sure the helper class is always included.
 require_once 'CRM/Customreports/Helper.php';
 
 /**
@@ -157,8 +159,6 @@ function customreports_civicrm_navigationMenu(&$menu) {
  * Implements hook_civicrm_searchTasks()
  */
 function customreports_civicrm_searchTasks($objectType, &$tasks) {
-  H::log();
-  H::log("checking searchTasks for $objectType");
   switch ($objectType) {
     case 'contribution':
       $tasks[] = array(
@@ -168,8 +168,8 @@ function customreports_civicrm_searchTasks($objectType, &$tasks) {
       );
       break;
     case 'membership':
-      // For some reason, this is getting called multiple time.  Make sure
-      // to only add it once.
+      // For some reason, memberhsip tasks are getting called multiple time.
+      // Make sure to only add it once.
       $found = false;
       foreach ($tasks as $val) {
         if ($val['class'] == 'CRM_Customreports_Form_Task_MembershipLanding') {

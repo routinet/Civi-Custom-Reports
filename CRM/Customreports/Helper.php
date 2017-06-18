@@ -20,6 +20,7 @@ class CRM_Customreports_Helper {
     ],
     'membership'   => [
       'MembershipGeneral' => 'Membership - New/Renew/Return',
+      'MembershipReplacement' => 'Membership - Replacement Card',
     ],
   ];
 

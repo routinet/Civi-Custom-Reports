@@ -92,7 +92,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
    *
    * @return array rendered HTML documents for each component ID.
    */
-  public function getHtmlFromSmarty($tokens) {
+  public function getHtmlFromSmarty() {
     H::log();
     $ret = [];
 
@@ -124,7 +124,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
         }
 
         // TODO: For debugging
-        //H::log("all tokens=\n".var_export($this->tokens,1));
+        H::log("all tokens=\n".var_export($this->tokens,1));
         // Add the Smarty-parsed template to the return array
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }
