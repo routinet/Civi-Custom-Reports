@@ -17,6 +17,7 @@ class CRM_Customreports_Helper {
     'contribution' => [
       'ContributionLetterStandard'   => 'Contribution Letter - Standard',
       'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
+      'ContributionLetterFromOrg'    => 'Contribution Letter - From Organization'
     ],
     'membership'   => [
       'MembershipGeneral' => 'Membership - New/Renew/Return',

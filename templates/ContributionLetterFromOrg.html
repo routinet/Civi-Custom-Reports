@@ -1,0 +1,40 @@
+<p>{$smarty.now|date_format}</p>
+
+<p>{$contact.display_name}<br/>
+    {contact.street_address}<br/>
+    {contact.city}, {contact.state_province} {contact.postal_code}</p>
+
+<p>Dear {contact.display_name}:</p>
+
+<p>Thank you for your recent contribution! Your
+    donation provides the resources necessary for our 1,700+ volunteers to build upon and maintain a
+    vast network of trails in and around New York and New Jersey and to educate the public on the
+    responsible use of trails and the natural environment.</p>
+
+<p>Membership dues and the sale of Trail Conference maps, books, and other merchandise only partially
+    fund our work. We also rely on donations, like yours as a business partner.  Whether it's through monetary gifts, in-kind donations or volunteering, our business and organizational sponsors are key to our ability to fulfill our mission to provide hiking opportunities in the region and representing the interests and concerns of the hiking community.</p>
+
+<p>With your gift, you can proudly say that you are helping to keep it green, and that you are part of the team that has built and maintains over 2,000 miles of trails.  Your investment in us helps us invest in our people and services that preserve and enhance our natural environment.</p>
+
+<p>With sincere thanks,</p>
+
+{contribution.electronic_signature}
+<p>Edward K. Goodell<br/>Executive Director</p>
+
+<div>
+    --------------------------------------------------------------------------------------------<br/>
+    GIFT RECEIPT
+
+    <p>Gift Amount: ${contribution.net_amount} {contribution.tribute_type} {contribution.tribute_name}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {contribution.financial_type_name}<br />
+        {if $contribution.financial_type_name == 'Restricted'}
+        Note: {contribution.contribution_note}<br />
+        {/if}
+		Matching Gift Company: {contribution.company_matched}
+    </p>
+
+    <div style="font-size:.75em">The NY-NJ Trail Conference is a 501(c)(3) organization.  The entire amount of your contribution is tax-deductible.  No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your contribution. Please keep this
+        letter of acknowledgement with your tax records to provide to the IRS upon request.
+    </div>
+</div>
