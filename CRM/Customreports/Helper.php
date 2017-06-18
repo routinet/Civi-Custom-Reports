@@ -167,6 +167,11 @@ class CRM_Customreports_Helper {
       }
     }
 
+    // If no signature file is assigned, leave space for a signature.
+    if (!$ret) {
+      $ret = '<p><br /><br /><br /></p>';
+    }
+
     return $ret;
   }
 }

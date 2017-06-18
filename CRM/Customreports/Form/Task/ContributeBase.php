@@ -116,6 +116,8 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
           $smarty->assign('soft_contact', $this->tokens['contact'][$row['primary_soft_contact']]);
         }
 
+        // TODO: For debugging
+        H::log("all tokens=\n".var_export($this->tokens,1));
         // Add the Smarty-parsed template to the return array
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }
