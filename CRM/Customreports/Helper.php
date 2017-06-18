@@ -15,12 +15,13 @@ class CRM_Customreports_Helper {
   // An array of all report contexts, whose members are keyed by template filename.
   public static $all_reports = [
     'contribution' => [
-      'ContributionLetterStandard'   => 'Contribution Letter - Standard',
-      'ContributionLetterThroughOrg' => 'Contribution Letter - Organization',
-      'ContributionLetterFromOrg'    => 'Contribution Letter - From Organization'
+      'ContributionLetterStandard'    => 'Contribution Letter - Standard',
+      'ContributionLetterThroughOrg'  => 'Contribution Letter - Organization',
+      'ContributionLetterFromOrg'     => 'Contribution Letter - From Organization',
+      'ContributionLetterAdvisedFund' => 'Contribution Letter - Advised Fund',
     ],
     'membership'   => [
-      'MembershipGeneral' => 'Membership - New/Renew/Return',
+      'MembershipGeneral'     => 'Membership - New/Renew/Return',
       'MembershipReplacement' => 'Membership - Replacement Card',
     ],
   ];
