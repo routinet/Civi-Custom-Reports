@@ -1,0 +1,39 @@
+<p>{$smarty.now|date_format}</p>
+
+<p>{$contact.display_name}<br/>
+    {contact.street_address}<br/>
+    {contact.city}, {contact.state_province} {contact.postal_code}</p>
+
+<p>Dear {contact.first_name}:</p>
+
+<p>Thank you for your contribution of ${$contribution.net_amount|string_format:"%.2f"} {contribution.custom_36} {contribution.custom_35}!</p>
+
+<p>Because of your generosity, your gift enables the Trail Conference to operate, maintain and improve the Trail Conference's headquarters' facilities and grounds for the long term use and enjoyment of our staff, volunteers, members and the community.</p>
+
+<p>The leadership and support that you have shown in your commitment is vital to the new Headquarters of the Trail Conference.</p>
+
+<p>Thank you again for your support</p>
+
+<p>Sincerely,</p>
+
+{contribution.electronic_signature}
+<p>Edward Goodell<br/>Executive Director</p>
+
+<div>--------------------------------------------------------------------------------------------<br/>
+    GIFT RECEIPT<br/>
+    <div>Gift amount: ${$contribution.net_amount|string_format:"%.2f"} {contribution.custom_36}
+        {contribution.custom_35}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {$contribution.financial_type_name}<br/>
+        {if $contribution.financial_type_name == 'Restricted'}
+        Note: {contribution.contribution_note}<br/>
+        {/if}
+        Matching Gift Company: {if $contribution.custom_40 == 'Y'}Yes{/if}{if $contribution.custom_40 != 'Y'}No{/if}
+    </div>
+</div>
+<div style="font-size:.75em">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
+        is tax-deductible.<br/>
+        No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
+        contribution.<br/>
+        Please keep this letter of acknowledgment with your tax records to provide to the IRS upon request.
+    </div>
