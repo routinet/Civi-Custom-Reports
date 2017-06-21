@@ -101,6 +101,10 @@ class CRM_Customreports_Form_Report_SoftCreditContributionDetail extends CRM_Rep
       "INNER JOIN civicrm_option_group optgroup " .
       "ON {$this->_aliases['civicrm_option']}.option_group_id = optgroup.id AND optgroup.name = 'soft_credit_type' " .
 
+      // Contact, the organization through which the contribution is being soft credited
+      "INNER JOIN civicrm_contact {$this->_aliases['civicrm_fundcontact']} " .
+      "ON {$this->_aliases['civicrm_fundcontact']}.id = {$this->_aliases['civicrm_contribution']}.contact_id " .
+
       // Contact, the contact soft credited with the contribution
       "INNER JOIN civicrm_contact {$this->_aliases['civicrm_contact']} " .
       "ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_soft']}.contact_id " .
@@ -344,6 +348,20 @@ class CRM_Customreports_Form_Report_SoftCreditContributionDetail extends CRM_Rep
           ],
         ],
         'grouping' => 'location-fields',
+      ],
+      'civicrm_fundcontact' => [
+        'dao'      => 'CRM_Contact_DAO_Contact',
+        'table_name' => 'civicrm_contact',
+        'dbAlias' => 'civicrm_fundcontact',
+        'fields' => [
+          'receiver_name'        => [
+            'title'    => ts('Donor Name'),
+            'name' => 'sort_name',
+            'required' => TRUE,
+            'default'  => TRUE,
+          ],
+        ],
+        'grouping' => 'contribution-fields',
       ],
       'civicrm_soft'          => [
         'dao'        => 'CRM_Contribute_DAO_ContributionSoft',
