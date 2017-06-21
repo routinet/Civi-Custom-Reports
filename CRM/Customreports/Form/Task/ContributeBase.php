@@ -31,7 +31,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
    */
   public function customizeTokenDetails() {
     H::log();
-    $this->loadSoftCreditContacts();
   }
 
   /**
@@ -68,18 +67,15 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
         $matches = [];
         preg_match('/^civicrm_([^_]+)_(.*)/', $field, $matches);
         switch ($matches[1]) {
-          case 'financialtype':
-          case 'contribution':
-          case 'product':
-          case 'note':
-            $tokenized['component'][$component_id][$matches[2]] = $value;
-            break;
           case 'value':
             // custom fields belong to the component
             $second_find = $matches[2];
             $matches     = [];
             preg_match('/[a-zA-Z0-9_]+_[0-9]+_([a-zA-Z0-9_]+)/', $second_find, $matches);
             $tokenized['component'][$component_id][$matches[1]] = $value;
+            break;
+          default:
+            $tokenized['component'][$component_id][$matches[2]] = $value;
             break;
         }
       }
@@ -118,11 +114,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
         // Set the primary contact tokens
         $smarty->assign('contact', $this->tokens['contact'][$row['contact_id']]);
 
-        // If a soft credit contact is available, set it also
-        if (!empty($row['primary_soft_contact'])) {
-          $smarty->assign('soft_contact', $this->tokens['contact'][$row['primary_soft_contact']]);
-        }
-
         // TODO: For debugging
         H::log("all tokens=\n".var_export($this->tokens,1));
         // Add the Smarty-parsed template to the return array
@@ -160,37 +151,6 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     // format result set.
     $report->formatDisplay($this->report_data, FALSE);
-  }
-
-  public function loadSoftCreditContacts() {
-
-    // An array of soft credit contact IDs not already loaded.
-    $extra_ids = [];
-
-    // Get the soft credits for these contributions.
-    $IDs   = implode(',', $this->_componentIds);
-    $query = "SELECT contribution_id, contact_id FROM civicrm_contribution_soft WHERE contribution_id IN ( $IDs )";
-    $dao = CRM_Core_DAO::executeQuery($query);
-
-    // For each contact, see if it is loaded.  If not, add it to the list.
-    // Also, note the *first* contact as the "primary".
-    while ($dao->fetch()) {
-      if (!isset($this->tokens['component'][$dao->contribution_id]['soft_credit_ids'])) {
-        $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'] = [];
-        $this->tokens['component'][$dao->contribution_id]['primary_soft_contact'] = $dao->contact_id;
-      }
-      if (!in_array($dao->contact_id, $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'])) {
-        $this->tokens['component'][$dao->contribution_id]['soft_credit_ids'][] = $dao->contact_id;
-      }
-      if (!in_array($dao->contact_id, $this->tokens['contact'])) {
-        $extra_ids[] = $dao->contact_id;
-      }
-    }
-
-    // If we need to load more contacts, do that now.
-    if (count($extra_ids)) {
-      $this->tokens['contact'] += CRM_Utils_Token::getTokenDetails($extra_ids, NULL, FALSE, FALSE)[0];
-    }
   }
 
   /**

@@ -1,12 +1,12 @@
 <p>{$smarty.now|date_format}</p>
 
-<p>{soft_contact.display_name}<br/>
-    {soft_contact.street_address}<br/>
-    {soft_contact.city}, {soft_contact.state_province} {soft_contact.postal_code}</p>
+<p>{contact.display_name}<br/>
+    {contact.street_address}<br/>
+    {contact.city}, {contact.state_province} {contact.postal_code}</p>
 
-<p>Dear {soft_contact.first_name}:</p>
+<p>Dear {contact.first_name}:</p>
 
-<p>Thank you for your recent contribution through {contact.display_name}! Your
+<p>Thank you for your recent contribution through {contribution.receiver_name}! Your
     generosity provides the resources necessary for our 1,700+ volunteers to build upon and maintain a
     vast network of trails in and around New York and New Jersey and to educate the public on the
     responsible use of trails and the natural environment.</p>
@@ -33,7 +33,7 @@
     --------------------------------------------------------------------------------------------<br/>
     GIFT ACKNOWLEDGEMENT
 
-    <p>Gift Amount: ${contribution.net_amount} through {contact.display_name}<br/>
+    <p>Gift Amount: ${contribution.soft_amount} through {contribution.receiver_name}<br/>
         Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
         Fund: {contribution.financial_type_name}<br />
         {if $contribution.financial_type_name == 'Restricted'}

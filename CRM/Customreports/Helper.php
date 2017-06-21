@@ -16,7 +16,7 @@ class CRM_Customreports_Helper {
   public static $all_reports = [
     'contribution' => [
       'ContributionLetterStandard'    => 'Contribution Letter - Standard',
-      'ContributionLetterThroughOrg'  => 'Contribution Letter - Organization',
+      'ContributionLetterThroughOrg'  => 'Contribution Letter - Soft Credits',
       'ContributionLetterFromOrg'     => 'Contribution Letter - From Organization',
       'ContributionLetterAdvisedFund' => 'Contribution Letter - Advised Fund',
       'ContributionLetterCampaign'     => 'Contribution Letter - Campaign',
