@@ -22,7 +22,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*}
+*}<h1>TODO: Should this file be deleted?</h1>
 <div class="crm-block crm-form-block crm-contact-task-customreports-form-block">
 <div class="messages status no-popup">{include file="CRM/Contribute/Form/Task.tpl"}</div>
 <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>

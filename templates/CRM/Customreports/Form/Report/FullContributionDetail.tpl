@@ -3,7 +3,7 @@
  | This file was originally created from CRM/Report/Form/Layout/Table.tpl.  |
  | com.crusonweb.nynjtc.customreports - Contribution Letter Standard (PDF)  |
  +--------------------------------------------------------------------------+
-*}<h1>THE REAL QUESTION IS IF WE NEED THIS FILE</h1>
+*}<h1>TODO: THE REAL QUESTION IS IF WE NEED THIS FILE</h1>
 <div id="footer">Powered by Smarty {$smarty.version}</div>
 <pre id="debug_info">{$all_vars}</pre>
 {include file="CRM/Report/Form.tpl"}

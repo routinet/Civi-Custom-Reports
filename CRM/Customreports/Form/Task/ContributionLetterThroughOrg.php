@@ -5,5 +5,5 @@
 class CRM_Customreports_Form_Task_ContributionLetterThroughOrg extends CRM_Customreports_Form_Task_ContributeBase {
   protected $templateName = 'ContributionLetterThroughOrg';
   protected $templateTitle = 'Contribution Letter - Organization';
-
+  protected $reportName = 'SoftCreditContributionDetail';
 }
