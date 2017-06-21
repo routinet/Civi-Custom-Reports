@@ -9,15 +9,22 @@
 class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
 
   // To be overwritten by child classes.
+  // The title of the template entry.
   protected $templateTitle = '';
 
+  // The machine name of the template entry.
   protected $templateName = '';
+
+  // The class name of the report to use as a data source.
+  protected $reportName = '';
 
   protected $context = 'membership';
 
-  public $tokens = [];
-
+  // Raw report data
   public $report_data = [];
+
+  // Report data, translated into token groups for Smarty.
+  public $tokens = [];
 
   /**
    * To be overwritten by child classes for letter-specific token customization.
@@ -137,7 +144,8 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
     H::log();
 
     // Get the report instance
-    $report = new CRM_Customreports_Form_Report_FullMembershipDetail();
+    $report_class = "CRM_Customreports_Form_Report_" . $this->reportName;
+    $report = new $report_class;
 
     // Set the filter to use contribution IDs as passed to this form.
     $report->modifyParams('membership_id_op', 'in');
