@@ -491,19 +491,25 @@ class CRM_Customreports_Form_Report_FullContributionDetail extends CRM_Report_Fo
         ],
 
       ],
-      'civicrm_product' => [
-        'dao' => 'CRM_Contribute_DAO_Product',
-        'fields' => [
-          'product_name' => [
-            'title' => 'Premium Name',
-            'name' => 'name',
-            'default' => TRUE,
+      'civicrm_product'       => [
+        'dao'      => 'CRM_Contribute_DAO_Product',
+        'fields'   => [
+          'product_name'        => [
+            'title'    => 'Premium Name',
+            'name'     => 'name',
+            'default'  => TRUE,
             'required' => TRUE,
           ],
           'product_description' => [
-            'title' => 'Premium Description',
-            'name'=>'description',
-            'default' => TRUE,
+            'title'    => 'Premium Description',
+            'name'     => 'description',
+            'default'  => TRUE,
+            'required' => TRUE,
+          ],
+          'product_price'       => [
+            'title'    => 'Premium Value',
+            'name'     => 'price',
+            'default'  => TRUE,
             'required' => TRUE,
           ],
         ],

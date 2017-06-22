@@ -25,7 +25,7 @@
     --------------------------------------------------------------------------------------------<br/>
     GIFT RECEIPT
 
-    <p>Gift Amount: ${contribution.net_amount} {contribution.tribute_type} {contribution.tribute_name}<br/>
+    <p>Gift Amount: ${contribution.total_amount} {contribution.tribute_type} {contribution.tribute_name}<br/>
         Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
         Fund: {contribution.financial_type_name}<br />
         {if $contribution.financial_type_name == 'Restricted'}

@@ -11,7 +11,7 @@
     {/if}{if $membership.status_name == 'Returning'}Welcome back to the New York-New Jersey Trail Conference, and thank you for supporting us
     {/if}
     with your
-    ${$membership.sum_total_amount|string_format:"%.2f"}
+    {if $membership.sum_total_amount > 0}${$membership.sum_total_amount|string_format:"%.2f"}{/if}
     {membership.type_membership_type_name} membership. Your membership helps to support our many programs and projects
     aimed at building and maintaining trails and helping people use and enjoy the backcountry in a responsible manner.</p>
 
