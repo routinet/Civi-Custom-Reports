@@ -488,6 +488,9 @@ class CRM_Customreports_Form_Report_FullContributionDetail extends CRM_Report_Fo
             'operatorType' => CRM_Report_Form::OP_INT,
             'type'         => CRM_Utils_Type::T_INT,
           ],
+          'receive_date'    => [
+            'operatorType' => CRM_Report_Form::OP_DATE,
+          ],
         ],
 
       ],
