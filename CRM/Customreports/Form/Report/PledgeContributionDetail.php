@@ -205,7 +205,7 @@ class CRM_Customreports_Form_Report_PledgeContributionDetail extends CRM_Report_
       'civicrm_contact'       => [
         'dao'      => 'CRM_Contact_DAO_Contact',
         'fields'   => [
-          'contact_id'       => [
+          'id'               => [
             'required' => TRUE,
             'name'     => 'id',
             'default'  => TRUE,

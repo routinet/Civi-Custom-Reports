@@ -20,6 +20,7 @@ class CRM_Customreports_Helper {
       'ContributionLetterFromOrg'     => 'Contribution Letter - From Organization',
       'ContributionLetterAdvisedFund' => 'Contribution Letter - Advised Fund',
       'ContributionLetterCampaign'     => 'Contribution Letter - Campaign',
+      'ContributionLetterPledge'      => 'Contribution Letter - Pledge Payment',
     ],
     'membership'   => [
       'MembershipGeneral'     => 'Membership - New/Renew/Return',
