@@ -1,0 +1,42 @@
+<p>{$smarty.now|date_format}</p>
+<p>{$giver.display_name}<br/>
+{$giver.street_address}<br/>
+{if $giver.city}{$giver.city}, {/if}{$giver.state_province} {$giver.postal_code}</p>
+
+<p>Dear {$giver.first_name}:</p>
+
+<p>At a time when you were thinking of someone dear to you, thank you for also thinking of Trail Conference.  We have received your gift in memory of {$beneficiary.display_name}.  We are honored to share in keeping the memory of {$beneficiary.display_name} alive by continuing the work of the Trail Conference through this donation.</p>
+
+<p>Gifts like this one provide the resources necessary for our 1,700+ volunteers to build upon and maintain a vast network of trails in and around New York and New Jersey and to educate the public on the responsible use of trails and the natural environment.  Any donation of $25 or more will be additionally acknowledged in an up coming Trail Walker newsletter.</p>
+
+<p>As you hike this magnificent region, you can proudly say that you are helping to keep it green, and that
+    you are part of the team that has built and continues to maintain over 2,100 miles of trails. Your
+    donation helps us invest in our people and services that preserve and enhance our natural
+    environment.</p>
+
+<p>With sincere thanks,</p>
+
+<p>{contribution.electronic_signature}</p>
+<p>Edward K. Goodell<br/>Executive Director</p>
+
+<p>P.S. Keep your eye on our website for information about upcoming events, workshops,
+    and other trail related news!</p>
+
+<div>
+    --------------------------------------------------------------------------------------------<br/>
+    GIFT RECEIPT
+    <div>Gift amount: ${$contribution.net_amount|string_format:"%.2f"}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {$contribution.financial_type_name}<br/>
+        Matching Gift Company: {if $contribution.custom_40 == 'Y'}Yes{/if}{if $contribution.custom_40 != 'Y'}No{/if}<br />
+        Premium received: {$contribution.product_name|default:"None"}<br />
+        Tax-Deductible Amount:  {assign var="taxdeduct" value="`$contribution.net_amount-$contribution.non_deductible_amount`"}{$taxdeduct|string_format:"%.2f"}
+    </div>
+
+    <div style="font-size:.75em">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
+        is tax-deductible.<br/>
+        No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
+        contribution.<br/>
+        Please keep this letter of acknowledgment with your tax records to provide to the IRS upon request.
+    </div>
+</div>
