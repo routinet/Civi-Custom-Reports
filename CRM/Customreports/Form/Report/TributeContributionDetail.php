@@ -84,36 +84,6 @@ class CRM_Customreports_Form_Report_TributeContributionDetail extends CRM_Report
     }
   }
 
-  /**
-   * Creates the left joins to address, phone, and email tables, based on the
-   * multiple contacts being loaded.
-   *
-   * @return string
-   */
-  public function fetchContactJoins() {
-    $tables = [ 'benefit', 'giver' ];
-    $ret = '';
-    foreach ($tables as $table) {
-      $tablename = "civicrm_$table";
-      $ret .=
-        // Phone, primary only
-        "LEFT JOIN civicrm_phone {$this->_aliases['civicrm_phone']} " .
-        "ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_phone']}.contact_id " .
-        "AND {$this->_aliases['civicrm_phone']}.is_primary = 1 " .
-
-        // Address, primary only
-        "LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']} " .
-        "ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_address']}.contact_id " .
-        "AND {$this->_aliases['civicrm_address']}.is_primary = 1 " .
-
-        // Email, primary only
-        "LEFT JOIN civicrm_email {$this->_aliases['civicrm_email']} " .
-        "ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id " .
-        "AND {$this->_aliases['civicrm_email']}.is_primary = 1 ";
-    }
-    return $ret;
-  }
-
   public function from() {
     // This query should be automatically filtered by the soft credit types
     // allowed in the report.

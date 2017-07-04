@@ -26,6 +26,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
   // Report data, translated into token groups for Smarty.
   public $tokens = [];
 
+  public function assignExtraTokens(&$smarty, $row) {
+  }
+
   /**
    * To be overwritten by child classes for letter-specific token customization.
    */
@@ -56,8 +59,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     // For each contribution row...
     foreach ($this->report_data as $contribution_key => $contribution_row) {
+      H::log("one row=\n".var_export($contribution_row,1));
       // Get some easy references to the ID fields.
-      $contact_id   = $contribution_row['civicrm_contact_id'];
+      $contact_id   = $contribution_row['civicrm_contribution_contact_id'];
       $component_id = $contribution_row['civicrm_contribution_contribution_id'];
 
       // For each field in the row, add the component fields to our token list.
@@ -113,6 +117,8 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
         // Set the primary contact tokens
         $smarty->assign('contact', $this->tokens['contact'][$row['contact_id']]);
+
+        $this->assignExtraTokens($smarty, $row);
 
         // TODO: For debugging
         H::log("all tokens=\n".var_export($this->tokens,1));
@@ -221,6 +227,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     else {
       parent::setContactIDs();
     }
+    H::log(__FUNCTION__." set contacts to=\n".var_export($this->_contactIds,1));
   }
 
   /**
