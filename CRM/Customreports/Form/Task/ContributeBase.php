@@ -61,7 +61,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     foreach ($this->report_data as $contribution_key => $contribution_row) {
       H::log("one row=\n".var_export($contribution_row,1));
       // Get some easy references to the ID fields.
-      $contact_id   = $contribution_row['civicrm_contribution_contact_id'];
+      $contact_id   = $contribution_row['civicrm_contact_id'];
       $component_id = $contribution_row['civicrm_contribution_contribution_id'];
 
       // For each field in the row, add the component fields to our token list.
