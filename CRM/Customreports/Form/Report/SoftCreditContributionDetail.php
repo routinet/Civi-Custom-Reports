@@ -360,6 +360,12 @@ class CRM_Customreports_Form_Report_SoftCreditContributionDetail extends CRM_Rep
             'required' => TRUE,
             'default'  => TRUE,
           ],
+          'receiver_display_name'        => [
+            'title'    => ts('Donor Display Name'),
+            'name' => 'display_name',
+            'required' => TRUE,
+            'default'  => TRUE,
+          ],
         ],
         'grouping' => 'contribution-fields',
       ],
