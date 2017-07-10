@@ -181,6 +181,55 @@ class CRM_Customreports_Helper {
 
     return $ret;
   }
+
+  /**
+   * Write an array of HTML documents into a PDF file, one to a page.  After
+   * compiling the file, push it to the response and exit.
+   *
+   * @param $html array of rendered HTML pages.
+   * @param $template_name Optional filename prefix, defaults to "CiviReport".
+   */
+  public static function writePDF($html, $template_name = '') {
+    // Provide a default filename in case it was not passed.
+    if (empty($template_name)) {
+      $template_name = 'CiviReport';
+    }
+
+    // Add all the HTML pages to a PDF.
+    // Get the "standard" PDF format.
+    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfFormatName);
+    $layout_format = json_decode($format['value']);
+
+    // Set the proper orientation expected by TCPDF based on the format.
+    $layout_format->tcpdf_orient = strtoupper(substr($layout_format->orientation, 0, 1));
+
+    // Set the custom margins.
+    // TODO: This should be in the loaded PDF format.  Can worry about it later.
+    $layout_format->margin_left  = '.75';
+    $layout_format->margin_right = '.75';
+    $layout_format->margin_top   = '.75';
+
+    // Create the PDF object and set up the base style.
+    $pdf = new TCPDF($layout_format->tcpdf_orient, $layout_format->metric, $layout_format->paper_size);
+    $pdf->Open();
+    $pdf->SetMargins($layout_format->margin_left, $layout_format->margin_top, $layout_format->margin_right);
+    $pdf->setPrintHeader(FALSE);
+    $pdf->setPrintFooter(FALSE);
+    // TODO: font selection.
+    $pdf->setFont('interstate-light');
+
+    // Write the pages to the PDF.
+    foreach ($html as $key => $one_page) {
+      $pdf->AddPage();
+      $pdf->writeHTML($one_page);
+    }
+
+    // Push the PDF and exit.
+    $pdf->Close();
+    $pdf_file = $template_name . '-' . date("YmdHis") . '.pdf';
+    $pdf->Output($pdf_file, 'D');
+    CRM_Utils_System::civiExit(1);
+  }
 }
 
 // Create an easy reference to the helper class is logging is turned on.

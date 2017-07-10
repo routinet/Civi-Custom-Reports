@@ -26,6 +26,11 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
   // Report data, translated into token groups for Smarty.
   public $tokens = [];
 
+  /**
+   * To be overwritten by child classes for letter-specific Smarty token groups.
+   * @param $smarty
+   * @param $row
+   */
   public function assignExtraTokens(&$smarty, $row) {
   }
 
@@ -130,6 +135,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     return $ret;
   }
 
+  /**
+   * Instantiates and runs the custom report specified for this letter.
+   */
   public function loadReportData() {
     H::log();
 
@@ -177,7 +185,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
-    $this->writePDF($html);
+    CRM_Customreports_Helper::writePDF($html, $this->templateName);
 
   }
 
@@ -240,48 +248,5 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $defaults = [];
 
     return $defaults;
-  }
-
-  /**
-   * Write an array of HTML documents into a PDF file, one to a page.  After
-   * compiling the file, push it to the response and exit.
-   *
-   * @param $html array of rendered HTML pages.
-   */
-  public function writePDF($html) {
-    // Add all the HTML pages to a PDF.
-    // Get the "standard" PDF format.
-    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfFormatName);
-    $layout_format = json_decode($format['value']);
-
-    // Set the proper orientation expected by TCPDF based on the format.
-    $layout_format->tcpdf_orient = strtoupper(substr($layout_format->orientation, 0, 1));
-
-    // Set the custom margins.
-    // TODO: This should be in the loaded PDF format.  Can worry about it later.
-    $layout_format->margin_left  = '.75';
-    $layout_format->margin_right = '.75';
-    $layout_format->margin_top   = '.75';
-
-    // Create the PDF object and set up the base style.
-    $pdf = new TCPDF($layout_format->tcpdf_orient, $layout_format->metric, $layout_format->paper_size);
-    $pdf->Open();
-    $pdf->SetMargins($layout_format->margin_left, $layout_format->margin_top, $layout_format->margin_right);
-    $pdf->setPrintHeader(FALSE);
-    $pdf->setPrintFooter(FALSE);
-    // TODO: font selection.
-    $pdf->setFont('interstate-light');
-
-    // Write the pages to the PDF.
-    foreach ($html as $key => $one_page) {
-      $pdf->AddPage();
-      $pdf->writeHTML($one_page);
-    }
-
-    // Push the PDF and exit.
-    $pdf->Close();
-    $pdf_file = $this->templateName . '-' . date("YmdHis") . '.pdf';
-    $pdf->Output($pdf_file, 'D');
-    CRM_Utils_System::civiExit(1);
   }
 }
