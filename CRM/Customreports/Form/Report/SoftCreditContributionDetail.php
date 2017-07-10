@@ -354,6 +354,12 @@ class CRM_Customreports_Form_Report_SoftCreditContributionDetail extends CRM_Rep
         'table_name' => 'civicrm_contact',
         'dbAlias' => 'civicrm_fundcontact',
         'fields' => [
+          'receiver_id'        => [
+            'title'    => ts('Donor ID'),
+            'name' => 'id',
+            'required' => TRUE,
+            'default'  => TRUE,
+          ],
           'receiver_name'        => [
             'title'    => ts('Donor Name'),
             'name' => 'sort_name',
