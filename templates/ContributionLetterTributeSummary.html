@@ -1,0 +1,33 @@
+<p>{$smarty.now|date_format}</p>
+
+<p>{contribution.display_name}<br/>
+    {contribution.street_address}<br/>
+    {contribution.city}, {contribution.state_province} {contribution.postal_code}</p>
+
+<p>Dear {contribution.first_name}:</p>
+
+<p>Thank you again for recommending donations be made to the New York-New Jersey Trail Conference in remembrance of {$beneficiary.display_name}.  We have listed the donors donating between {$contribution.min_date|date_format} and {$contribution.max_date|date_format}.</p>
+<p>The trails {$beneficiary.first_name} loved to hike and the lands they traverse require care, responsible use, and support by the people who enjoy them.  The generous contributions of those listed below will make an immediate difference in the ability of our volunteers to accomplish the Trail Conference's mission.</p>
+<p>We appreciate your recommendation, and the support of those who made donations in {$beneficiary.first_name}'s memory.</p>
+<p>With sincere thanks,</p>
+
+<p>{contribution.electronic_signature}</p>
+<p>Edward K. Goodell<br/>
+    Executive Director</p>
+
+<p>P.S. Keep your eye on our website for information about upcoming events, workshops,
+    and other trail related news!</p>
+
+<div>--------------------------------------------------------------------------------------------<br/>
+GIFT DETAILS<br />
+    <table>
+        <thead>
+        <tr><th colspan="2">DATE:</th><th colspan="8">DONOR:</th></tr>
+        </thead>
+        <tbody>{foreach from=$contribution.summary item=row}
+        <tr><td colspan="2">{$row.contribution_date|date_format}</td><td colspan="8">{$row.address_summary}{assign var="sum_all_foreach" value=$sum_all_foreach+$row.amount}</td></tr>
+        {/foreach}
+        </tbody>
+    </table><br />
+    <div style="font-size:.90em">Total donated in memory of {$beneficiary.display_name} between {$contribution.min_date|date_format} and {$contribution.max_date|date_format}: {$sum_all_foreach|string_format:"$%.2f"}</div>
+</div>

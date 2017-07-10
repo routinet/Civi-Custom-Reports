@@ -15,15 +15,16 @@ class CRM_Customreports_Helper {
   // An array of all report contexts, whose members are keyed by template filename.
   public static $all_reports = [
     'contribution' => [
-      'ContributionLetterStandard'      => 'Contribution Letter - Standard',
-      'ContributionLetterThroughOrg'    => 'Contribution Letter - Soft Credits',
-      'ContributionLetterFromOrg'       => 'Contribution Letter - From Organization',
-      'ContributionLetterAdvisedFund'   => 'Contribution Letter - Advised Fund',
-      'ContributionLetterCampaign'      => 'Contribution Letter - Campaign',
-      'ContributionLetterPledge'        => 'Contribution Letter - Pledge Payment',
-      'ContributionLetterTribute'       => 'Contribution Letter - Tribute Thank You',
-      'ContributionLetterCelebration'   => 'Contribution Letter - Celebration Thank You',
-      'ContributionLetterTributeNotice' => 'Contribution Letter - Notice of Tribute',
+      'ContributionLetterStandard'       => 'Contribution Letter - Standard',
+      'ContributionLetterThroughOrg'     => 'Contribution Letter - Soft Credits',
+      'ContributionLetterFromOrg'        => 'Contribution Letter - From Organization',
+      'ContributionLetterAdvisedFund'    => 'Contribution Letter - Advised Fund',
+      'ContributionLetterCampaign'       => 'Contribution Letter - Campaign',
+      'ContributionLetterPledge'         => 'Contribution Letter - Pledge Payment',
+      'ContributionLetterTribute'        => 'Contribution Letter - Tribute Thank You',
+      'ContributionLetterCelebration'    => 'Contribution Letter - Celebration Thank You',
+      'ContributionLetterTributeNotice'  => 'Contribution Letter - Notice of Tribute',
+      'ContributionLetterTributeSummary' => 'Contribution Letter - Tribute Summary',
     ],
     'membership'   => [
       'MembershipGeneral'     => 'Membership - New/Renew/Return',
@@ -186,7 +187,7 @@ class CRM_Customreports_Helper {
    * Write an array of HTML documents into a PDF file, one to a page.  After
    * compiling the file, push it to the response and exit.
    *
-   * @param $html array of rendered HTML pages.
+   * @param $html          array of rendered HTML pages.
    * @param $template_name Optional filename prefix, defaults to "CiviReport".
    */
   public static function writePDF($html, $template_name = '') {
