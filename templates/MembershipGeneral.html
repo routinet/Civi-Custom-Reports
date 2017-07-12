@@ -36,10 +36,7 @@
 </div><br/><br/>
 <table>
     <tr>
-        <td>{contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}</td>
-        {if !empty($second_contact.display_name)}
-        <td>{second_contact.display_name}<br/>{membership.membership_id}<br/>{$membership.membership_end_date|date_format}
-        </td>
-        {/if}
+        <td>{contact.display_name}<br/>{if !empty($contact.external_identifier)}{contact.external_identifier}{/if}{if empty($contact.external_identifier)}{contact.contact_id}{/if}<br/>{$membership.membership_end_date|date_format:"%m/%d/%Y"}</td>
+        <td>{if !empty($second_contact.display_name)}{second_contact.display_name}<br/>{if !empty($second_contact.external_identifier)}{$second_contact.external_identifier}{/if}{if empty($second_contact.external_identifier)}{$second_contact.contact_id}{/if}<br/>{$membership.membership_end_date|date_format:"%m/%d/%Y"}{/if}{if empty($second_contact.display_name)}<div style="font-size:1.5em;font-weight:bold">VOID</div>{/if}</td>
     </tr>
 </table>
