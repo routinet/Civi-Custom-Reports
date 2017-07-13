@@ -120,7 +120,7 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "WHERE membership_civireport.id = cmp.membership_id AND cmp.id > mem_payment.id )" .
 
       // Contributions
-      "LEFT JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} " .
+      "INNER JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} " .
       "ON {$this->_aliases['civicrm_contribution']}.id = mem_payment.contribution_id " .
       // Not all memberships have contributions for "Member Dues".  See membership_id=1566.
       /*"AND {$this->_aliases['civicrm_contribution']}.financial_type_id = '$fin_type_id' " .*/
