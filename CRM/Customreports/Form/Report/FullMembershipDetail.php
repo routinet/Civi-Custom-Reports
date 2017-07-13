@@ -84,6 +84,15 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
   }
 
   public function from() {
+    // Include only contributions of type "Member Dues", per email 2017-07-12.
+    // Get the financial_type_id.
+    // But...not all memberships have contributions of that type.  See
+    // membership_id=1566.  Removing this for now.
+    /*$params = ['name'=>'Member Dues'];
+    $fin_type = [];
+    CRM_Financial_BAO_FinancialType::retrieve($params, $fin_type);
+    $fin_type_id = CRM_Utils_Array::value('id', $fin_type, 0);*/
+
     // Base table is civicrm_membership
     $this->_from = "FROM civicrm_membership {$this->_aliases['civicrm_membership']} " .
 
@@ -100,12 +109,21 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "ON {$this->_aliases['civicrm_membershipstatus']}.id = {$this->_aliases['civicrm_membership']}.status_id " .
 
       // Membership_Payment, a many-to-many table for memberships and contributions
-      "LEFT JOIN civicrm_membership_payment mem_payment " .
+      "INNER JOIN civicrm_membership_payment mem_payment " .
       "ON mem_payment.membership_id = {$this->_aliases['civicrm_membership']}.id " .
+
+      // Limit the membership_payment join to only the last recorded contribution, per email 2017-07-12.
+      "AND NOT EXISTS (SELECT id FROM civicrm_membership_payment cmp " .
+      // Not all memberships have contributions for "Member Dues".  See membership_id=1566.
+      /*INNER JOIN " .
+      "civicrm_contribution cc ON cmp.contribution_id=cc.id and cc.financial_type_id='$fin_type_id' " . */
+      "WHERE membership_civireport.id = cmp.membership_id AND cmp.id > mem_payment.id )" .
 
       // Contributions
       "LEFT JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} " .
       "ON {$this->_aliases['civicrm_contribution']}.id = mem_payment.contribution_id " .
+      // Not all memberships have contributions for "Member Dues".  See membership_id=1566.
+      /*"AND {$this->_aliases['civicrm_contribution']}.financial_type_id = '$fin_type_id' " .*/
 
       // Phone, primary only
       "LEFT JOIN civicrm_phone {$this->_aliases['civicrm_phone']} " .
