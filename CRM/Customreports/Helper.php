@@ -208,7 +208,7 @@ class CRM_Customreports_Helper {
     // TODO: This should be in the loaded PDF format.  Can worry about it later.
     $layout_format->margin_left  = '.75';
     $layout_format->margin_right = '.75';
-    $layout_format->margin_top   = '.75';
+    $layout_format->margin_top   = '2';
 
     // Create the PDF object and set up the base style.
     $pdf = new TCPDF($layout_format->tcpdf_orient, $layout_format->metric, $layout_format->paper_size);
