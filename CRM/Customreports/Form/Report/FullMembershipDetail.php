@@ -110,10 +110,10 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
 
       // Membership_Payment, a many-to-many table for memberships and contributions
       "INNER JOIN civicrm_membership_payment mem_payment " .
-      "ON mem_payment.membership_id = {$this->_aliases['civicrm_membership']}.id " .
+      "ON mem_payment.membership_id = {$this->_aliases['civicrm_membership']}.id " . 
 
       // Limit the membership_payment join to only the last recorded contribution, per email 2017-07-12.
-      "AND NOT EXISTS (SELECT id FROM civicrm_membership_payment cmp " .
+      "AND NOT EXISTS (SELECT cc.id FROM civicrm_membership_payment cmp " .
       // Not all memberships have contributions for "Member Dues".  See membership_id=1566.
       "INNER JOIN " .
       "civicrm_contribution cc ON cmp.contribution_id=cc.id and cc.financial_type_id='$fin_type_id' " .
