@@ -1,3 +1,4 @@
+<div style="font-size:.8em;">
 <p>{$smarty.now|date_format}</p>
 
 <p>{contribution.display_name}<br/>
@@ -30,4 +31,5 @@ GIFT DETAILS<br />
         </tbody>
     </table><br />
     <div style="font-size:.90em">Total donated in memory of {$beneficiary.display_name} between {$contribution.min_date|date_format} and {$contribution.max_date|date_format}: {$sum_all_foreach|string_format:"$%.2f"}</div>
+</div>
 </div>

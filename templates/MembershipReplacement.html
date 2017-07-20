@@ -1,3 +1,4 @@
+<div style="font-size:.8em;">
 <p>{$membership.receive_date|date_format}</p>
 
 <p>{$contact.first_name} {$contact.last_name}<br/>
@@ -16,14 +17,14 @@
 
 {membership.electronic_signature}
 <p>Edward K. Goodell<br />Executive Director</p>
-
-<div style="font-size:.75em;">The Trail Conference is a 501(c)3 organization. The entire amount of your membership dues
+</div>
+<div style="font-size:.55em;">The Trail Conference is a 501(c)3 organization. The entire amount of your membership dues
     is tax-deductible.<br/>
     No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
     contribution.<br/>
     Please keep this letter of acknowledgment with your tax records.
 </div><br/><br/>
-<table>
+<table style="font-size:1em;">
     <tr>
         <td>{contact.display_name}<br/>{if !empty($contact.external_identifier)}{contact.external_identifier}{/if}{if empty($contact.external_identifier)}{contact.contact_id}{/if}<br/>{$membership.membership_end_date|date_format:"%m/%d/%Y"}</td>
         <td>{if !empty($second_contact.display_name)}{second_contact.display_name}<br/>{if !empty($second_contact.external_identifier)}{$second_contact.external_identifier}{/if}{if empty($second_contact.external_identifier)}{$second_contact.contact_id}{/if}<br/>{$membership.membership_end_date|date_format:"%m/%d/%Y"}{/if}{if empty($second_contact.display_name)}<div style="font-size:1.5em;font-weight:bold">VOID</div>{/if}</td>
