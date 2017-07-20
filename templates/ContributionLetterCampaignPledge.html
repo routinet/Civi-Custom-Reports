@@ -1,0 +1,42 @@
+<div style="font-size:.8em;">
+<p>{$smarty.now|date_format}</p>
+
+<p>{$contact.display_name}<br/>
+    {contact.street_address}<br/>
+    {contact.city}, {contact.state_province} {contact.postal_code}</p>
+
+<p>Dear {contact.first_name}:</p>
+
+<p>Thank you for your recent pledge payment of ${$contribution.net_amount|string_format:"%.2f"}. With this payment, your
+    total campaign pledge payments equal ${$contribution.pledge_total_paid|string_format:"%.2f"} and your pledge balance
+    is now ${$contribution.pledge_balance|string_format:"%.2f"}</p>
+
+<p>Your contributions to the {$contribution.financial_type_name} help support the adaptive reuse of this iconic
+    structure into, not only our future headquarters, but as a community center for education, conservation, historic
+    preservation, and visitor's center.</p>
+
+<p>Happy Trails,</p>
+
+<p>Edward Goodell<br/>Executive Director</p>
+
+<p>P.S. Keep your eye on our website for information about upcoming events, workshops, and other trail related
+    news!!</p>
+
+<div>--------------------------------------------------------------------------------------------<br/>
+    GIFT RECEIPT
+    <div>Gift amount: ${$contribution.net_amount|string_format:"%.2f"} {contribution.tribute_type}
+        {contribution.tribute_name}<br/>
+        Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
+        Fund: {$contribution.financial_type_name}<br/>
+        {if $contribution.financial_type_name == 'Restricted'}
+        Note: {contribution.contribution_note}<br/>
+        {/if}
+    </div>
+</div>
+<div style="font-size:.55em">The Trail Conference is a 501(c)3 organization. The entire amount of your contribution
+    is tax-deductible.<br/>
+    No goods or services were provided by the NY-NJ Trail Conference (FID#22-6042838) in return for your
+    contribution.<br/>
+    Please keep this letter of acknowledgment with your tax records to provide to the IRS upon request.
+</div>
+</div>
