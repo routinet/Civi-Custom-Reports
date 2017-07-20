@@ -109,7 +109,9 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "ON {$this->_aliases['civicrm_membershipstatus']}.id = {$this->_aliases['civicrm_membership']}.status_id " .
 
       // Membership_Payment, a many-to-many table for memberships and contributions
-      "INNER JOIN civicrm_membership_payment mem_payment " .
+      // The LEFT JOIN here allows memberships with no contributions, e.g., complimentary.
+      // This could impact available tokens in the template.
+      "LEFT JOIN civicrm_membership_payment mem_payment " .
       "ON mem_payment.membership_id = {$this->_aliases['civicrm_membership']}.id " . 
 
       // Limit the membership_payment join to only the last recorded contribution, per email 2017-07-12.
@@ -120,7 +122,7 @@ class CRM_Customreports_Form_Report_FullMembershipDetail extends CRM_Report_Form
       "WHERE membership_civireport.id = cmp.membership_id AND cmp.id > mem_payment.id )" .
 
       // Contributions
-      "INNER JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} " .
+      "LEFT JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} " .
       "ON {$this->_aliases['civicrm_contribution']}.id = mem_payment.contribution_id " .
       // Not all memberships have contributions for "Member Dues".  See membership_id=1566.
       "AND {$this->_aliases['civicrm_contribution']}.financial_type_id = '$fin_type_id' " .
