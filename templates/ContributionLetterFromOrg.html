@@ -1,11 +1,9 @@
 <div style="font-size:.8em;">
 <p>{$smarty.now|date_format}</p>
 
-<p>{$contact.display_name}<br/>
-    {contact.street_address}<br/>
-    {contact.city}, {contact.state_province} {contact.postal_code}</p>
+<p>{if $related.display_name}{$related.display_name}<br />{/if}{$contact.display_name}<br/>{contact.street_address}<br/>{contact.city}, {contact.state_province} {contact.postal_code}</p>
 
-<p>Dear {contact.display_name}:</p>
+<p>Dear {if $related.display_name}{$related.postal_greeting_display}{/if}{if !$related.display_name}{$contact.display_name}{/if}:</p>
 
 <p>Thank you for your recent contribution! Your
     donation provides the resources necessary for our 1,700+ volunteers to build upon and maintain a
