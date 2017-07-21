@@ -7,8 +7,7 @@
 
 <p>Dear {contact.first_name}:</p>
 
-<p>Thank you for your contribution of ${$contribution.net_amount|string_format:"%.2f"} {contribution.custom_36}
-    {contribution.custom_35}!</p>
+<p>Thank you for your contribution of ${$contribution.net_amount|string_format:"%.2f"} {contribution.contribution_note}!</p>
 
 <p>Because of your generosity, your gift enables the Trail Conference to operate, maintain and improve the Trail
     Conference's headquarters' facilities and grounds for the long term use and enjoyment of our staff, volunteers,
@@ -26,8 +25,7 @@
 
 <div>--------------------------------------------------------------------------------------------<br/>
     GIFT RECEIPT<br/>
-    <div>Gift amount: ${$contribution.net_amount|string_format:"%.2f"} {contribution.custom_36}
-        {contribution.custom_35}<br/>
+    <div>Gift amount: ${$contribution.net_amount|string_format:"%.2f"} {contribution.contribution_note}<br/>
         Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
         Fund: {$contribution.financial_type_name}<br/>
         {if $contribution.financial_type_name == 'Restricted'}
