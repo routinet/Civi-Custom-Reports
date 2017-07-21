@@ -184,7 +184,7 @@ class CRM_Customreports_Form_Report_SoftCreditContributionDetail extends CRM_Rep
     $this->_params['contribution_or_soft_value'] = 'both';
 
     // One row per contribution.
-    $this->_params['group_bys'] = ['contribution_id' => '1'];
+    //$this->_params['group_bys'] = ['contribution_id' => '1'];
 
     // Set the "order by" options.
     $this->_params['order_bys'] = [
