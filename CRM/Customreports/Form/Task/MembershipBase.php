@@ -47,6 +47,9 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
    * for the primary contact.
    */
   public function getBaseTokens() {
+    // Clean any NULL/zero entries from the contact IDs.
+    $this->_contactIds = array_filter($this->_contactIds);
+
     // Initialize tokens.  Contact tokens are loaded from the token system,
     // since _contactIds is conveniently populated with soft contact IDs also.
     $tokenized = [

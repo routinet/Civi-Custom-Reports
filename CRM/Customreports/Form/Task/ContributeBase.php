@@ -55,6 +55,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
    * for the primary contact.
    */
   public function getBaseTokens() {
+    // Clean any NULL/zero entries from the contact IDs.
+    $this->_contactIds = array_filter($this->_contactIds);
+
     // Initialize tokens.  Contact tokens are loaded from the token system,
     // since _contactIds is conveniently populated with soft contact IDs also.
     $tokenized = [
