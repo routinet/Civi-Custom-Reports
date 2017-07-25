@@ -4,6 +4,6 @@
  */
 class CRM_Customreports_Form_Task_ContributionLetterAdvisedFund extends CRM_Customreports_Form_Task_ContributeBase {
   protected $templateName = 'ContributionLetterAdvisedFund';
-  protected $templateTitle = 'Contribution Letter - Adviced Fund';
-  protected $reportName = 'FullContributionDetail';
+  protected $templateTitle = 'Contribution Letter - Advised Fund';
+  protected $reportName = 'SoftCreditContributionDetail';
 }
