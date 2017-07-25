@@ -34,7 +34,7 @@
         Gift date: {$contribution.receive_date|date_format:"%m/%d/%Y"}<br/>
         Fund: {$contribution.financial_type_name}<br/>
         {if $contribution.financial_type_name == 'Restricted'}Note: {contribution.contribution_note}<br/>{/if}
-        Matching Gift Company: {if $contribution.custom_40 == 'Y'}Yes{/if}{if $contribution.custom_40 != 'Y'}No{/if}<br />
+        Matching Gift Company: {if $contribution.custom_40 == 'Yes'}Yes{/if}{if $contribution.custom_40 != 'Yes'}No{/if}<br />
         Premium received: {$contribution.product_name|default:"None"}<br />
         Tax-Deductible Amount:  {assign var="taxdeduct" value="`$contribution.net_amount-$contribution.non_deductible_amount`"}{$taxdeduct|string_format:"%.2f"}<br />
     </div>
