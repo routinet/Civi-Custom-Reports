@@ -188,7 +188,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
-    CRM_Customreports_Helper::writePDF($html, $this->templateName);
+    CRM_Customreports_Helper::createCiviPDF($html, $this->templateName);
 
   }
 

@@ -8,7 +8,7 @@ define('CUSTOMREPORTS_EXT_NAME', 'com.crusonweb.nynjtc.customreports');
 
 // Switch for logging function
 // TODO: turn this off
-define('CUSTOMREPORTS_LOGGER', 0);
+define('CUSTOMREPORTS_LOGGER', 1);
 
 class CRM_Customreports_Helper {
 
@@ -41,7 +41,7 @@ class CRM_Customreports_Helper {
   public static $signatureFile = 'goodell-signature-200x43.png';
 
   // The name/label of the PDF format to use when rendering through TCPDF.
-  public static $pdfFormatName = 'Thank You Letters';
+  public static $pdfFormatName = 'CustomReports Default Format';
 
   // Log helper for development.
   public static function log($msg = '', $with_trace = FALSE) {
@@ -183,6 +183,27 @@ class CRM_Customreports_Helper {
     return $ret;
   }
 
+  public static function createCiviPDF($html, $template_name = '', $format = NULL) {
+    // Provide a default filename in case it was not passed.
+    if (empty($template_name)) {
+      $template_name = 'CiviReport';
+    }
+
+    // Generate the default filename.
+    $pdf_file = $template_name . '-' . date("YmdHis") . '.pdf';
+
+    // Retrieve the passed format, or load the default.
+    if (empty($format)) {
+      $format = CRM_Customreports_Helper::$pdfFormatName;
+    }
+    $format       = CRM_Core_BAO_PdfFormat::getPdfFormat('label', $format);
+    $format_array = json_decode($format['value'], TRUE);
+
+    // Write the PDF using Civi's functionality.
+    self::html2pdf($html, $pdf_file, FALSE, $format_array);
+    CRM_Utils_System::civiExit(1);
+  }
+
   /**
    * Write an array of HTML documents into a PDF file, one to a page.  After
    * compiling the file, push it to the response and exit.
@@ -231,9 +252,107 @@ class CRM_Customreports_Helper {
     $pdf->Output($pdf_file, 'D');
     CRM_Utils_System::civiExit(1);
   }
+
+  /**
+   * Reimplemented from CRM_Utils_PDF_Utils::html2pdf() in order to inject
+   * custom CSS files into the target HTML.  The original function strips
+   * the entire <head> element, inserting its own boilerplate in its place.
+   * This version adds this extension's custom stylesheet.
+   *
+   * @param        $text
+   * @param string $fileName
+   * @param bool   $output
+   * @param null   $pdfFormat
+   *
+   * @return string|void
+   */
+  public static function html2pdf(&$text, $fileName = 'civicrm.pdf', $output = FALSE, $pdfFormat = NULL) {
+    if (is_array($text)) {
+      $pages = &$text;
+    }
+    else {
+      $pages = [$text];
+    }
+    // Get PDF Page Format
+    $format = CRM_Core_BAO_PdfFormat::getDefaultValues();
+    if (is_array($pdfFormat)) {
+      // PDF Page Format parameters passed in
+      $format = array_merge($format, $pdfFormat);
+    }
+    else {
+      // PDF Page Format ID passed in
+      $format = CRM_Core_BAO_PdfFormat::getById($pdfFormat);
+    }
+    $paperSize    = CRM_Core_BAO_PaperSize::getByName($format['paper_size']);
+    $paper_width  = CRM_Utils_PDF_Utils::convertMetric($paperSize['width'], $paperSize['metric'], 'pt');
+    $paper_height = CRM_Utils_PDF_Utils::convertMetric($paperSize['height'], $paperSize['metric'], 'pt');
+    // dompdf requires dimensions in points
+    $paper_size  = [0, 0, $paper_width, $paper_height];
+    $orientation = CRM_Core_BAO_PdfFormat::getValue('orientation', $format);
+    $metric      = CRM_Core_BAO_PdfFormat::getValue('metric', $format);
+    $t           = CRM_Core_BAO_PdfFormat::getValue('margin_top', $format);
+    $r           = CRM_Core_BAO_PdfFormat::getValue('margin_right', $format);
+    $b           = CRM_Core_BAO_PdfFormat::getValue('margin_bottom', $format);
+    $l           = CRM_Core_BAO_PdfFormat::getValue('margin_left', $format);
+
+    $stationery_path_partial = CRM_Core_BAO_PdfFormat::getValue('stationery', $format);
+
+    $stationery_path = NULL;
+    if (strlen($stationery_path_partial)) {
+      $doc_root        = $_SERVER['DOCUMENT_ROOT'];
+      $stationery_path = $doc_root . "/" . $stationery_path_partial;
+    }
+
+    $margins = [$metric, $t, $r, $b, $l];
+
+    $config = CRM_Core_Config::singleton();
+
+    // Add a special region for the HTML header of PDF files:
+    $pdfHeaderRegion = CRM_Core_Region::instance('export-document-header', FALSE);
+    $htmlHeader      = ($pdfHeaderRegion) ? $pdfHeaderRegion->render('', FALSE) : '';
+
+    // Generate the custom CSS filename.
+    $custom_style = str_replace($_SERVER['DOCUMENT_ROOT'], '', self::getAssetDir()) . '/default-style.css';
+
+    $html = "<html>" .
+      "<head>" .
+      "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" .
+      "<style>@page { margin: {$t}{$metric} {$r}{$metric} {$b}{$metric} {$l}{$metric}; }</style>" .
+      "<style type=\"text/css\">@import url({$config->userFrameworkResourceURL}css/print.css);</style>" .
+      "<style type=\"text/css\">@import url($custom_style);</style>" .
+      "{$htmlHeader}" .
+      "</head>" .
+      "<body>" .
+      "<div id=\"crm-container\">\n";
+
+    // Strip <html>, <header>, and <body> tags from each page
+    $htmlElementstoStrip = [
+      '@<head[^>]*?>.*?</head>@siu',
+      '@<script[^>]*?>.*?</script>@siu',
+      '@<body>@siu',
+      '@</body>@siu',
+      '@<html[^>]*?>@siu',
+      '@</html>@siu',
+      '@<!DOCTYPE[^>]*?>@siu',
+    ];
+    $htmlElementsInstead = ['', '', '', '', '', ''];
+    foreach ($pages as & $page) {
+      $page = preg_replace($htmlElementstoStrip,
+        $htmlElementsInstead,
+        $page
+      );
+    }
+    // Glue the pages together
+    $html .= implode("\n<div style=\"page-break-after: always\"></div>\n", $pages);
+    $html .= "</div></body></html>";
+    if ($config->wkhtmltopdfPath) {
+      return CRM_Utils_PDF_Utils::_html2pdf_wkhtmltopdf($paper_size, $orientation, $margins, $html, $output, $fileName);
+    }
+    else {
+      return CRM_Utils_PDF_Utils::_html2pdf_dompdf($paper_size, $orientation, $html, $output, $fileName);
+    }
+  }
 }
 
 // Create an easy reference to the helper class is logging is turned on.
-if (CUSTOMREPORTS_LOGGER) {
-  class_alias('CRM_Customreports_Helper', 'H');
-}
+class_alias('CRM_Customreports_Helper', 'H');

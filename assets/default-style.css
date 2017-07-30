@@ -1,0 +1,7 @@
+@font-face {
+  font-family: interstate;
+  src: url('Interstate-Regular.ttf');
+}
+div {
+  font-family: interstate;
+}

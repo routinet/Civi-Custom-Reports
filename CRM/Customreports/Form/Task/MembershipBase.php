@@ -193,7 +193,8 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
     $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
-    $this->writePDF($html);
+    //$this->writePDF($html);
+    CRM_Customreports_Helper::createCiviPDF($html, $this->templateName);
 
   }
 
