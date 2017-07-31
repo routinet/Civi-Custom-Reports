@@ -18,6 +18,9 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
   // The class name of the report to use as a data source.
   protected $reportName = '';
 
+  // The name of the PDF format to use for this letter.
+  protected $pdfFormat = NULL;
+
   protected $context = 'contribution';
 
   // Raw report data
@@ -188,8 +191,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
-    CRM_Customreports_Helper::createCiviPDF($html, $this->templateName);
-
+    CRM_Customreports_Helper::writeToDompdf($html, $this->templateName, $this->pdfFormat);
   }
 
   /**
@@ -197,6 +199,10 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
    */
   public function preProcess() {
     H::log();
+
+    if (empty($this->pdfFormat)) {
+      $this->pdfFormat = CRM_Customreports_Helper::$pdfDefaultFormatName;
+    }
 
     $form_values = $this->getSubmitValues();
 

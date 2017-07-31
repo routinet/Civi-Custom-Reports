@@ -40,8 +40,20 @@ class CRM_Customreports_Helper {
   // subdirectory of this extension.
   public static $signatureFile = 'goodell-signature-200x43.png';
 
-  // The name/label of the PDF format to use when rendering through TCPDF.
-  public static $pdfFormatName = 'CustomReports Default Format';
+  // The name/label of the PDF format to pass to the PDF renderer (TCPDF/dompdf)
+  public static $pdfDefaultFormatName = 'CustomReports Default Format';
+
+  public static $pdfDefaultFormat = [
+    "paper_size"    => "letter",
+    "stationery"    => NULL,
+    "orientation"   => "portrait",
+    "metric"        => "in",
+    "margin_top"    => 2,
+    "margin_bottom" => 0.5,
+    "margin_left"   => 0.75,
+    "margin_right"  => 0.75,
+    "description"   => 'Created by CrusonWeb to support a default PDF format in the CustomReports extension.',
+  ];
 
   // Log helper for development.
   public static function log($msg = '', $with_trace = FALSE) {
@@ -54,6 +66,28 @@ class CRM_Customreports_Helper {
         $msg .= "\n" . var_export(array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1), 1);
       }
       error_log($msg);
+    }
+  }
+
+  public static function createPDFFormat() {
+    // Only create the format if it does not already exist.
+    $bao = CRM_Core_BAO_PdfFormat::getByName(self::$pdfDefaultFormatName);
+    if (!is_array($bao) || empty($bao['id'])) {
+      // Prep a format array to save.
+      $format = self::$pdfDefaultFormat;
+      $format['name'] = self::$pdfDefaultFormatName;
+
+      // Create the format.
+      $bao = new CRM_Core_BAO_PdfFormat();
+      $bao->savePdfFormat($format);
+    }
+  }
+
+  public static function destroyPDFFormat() {
+    // If the default format exists, remove it.
+    $bao = CRM_Core_BAO_PdfFormat::getByName(self::$pdfDefaultFormatName);
+    if (is_array($bao) && !empty($bao['id'])) {
+      CRM_Core_BAO_PdfFormat::del($bao['id']);
     }
   }
 
@@ -183,7 +217,7 @@ class CRM_Customreports_Helper {
     return $ret;
   }
 
-  public static function createCiviPDF($html, $template_name = '', $format = NULL) {
+  public static function writeToDompdf($html, $template_name = '', $format = NULL) {
     // Provide a default filename in case it was not passed.
     if (empty($template_name)) {
       $template_name = 'CiviReport';
@@ -194,7 +228,7 @@ class CRM_Customreports_Helper {
 
     // Retrieve the passed format, or load the default.
     if (empty($format)) {
-      $format = CRM_Customreports_Helper::$pdfFormatName;
+      $format = CRM_Customreports_Helper::$pdfDefaultFormatName;
     }
     $format       = CRM_Core_BAO_PdfFormat::getPdfFormat('label', $format);
     $format_array = json_decode($format['value'], TRUE);
@@ -211,7 +245,7 @@ class CRM_Customreports_Helper {
    * @param $html          array of rendered HTML pages.
    * @param $template_name Optional filename prefix, defaults to "CiviReport".
    */
-  public static function writePDF($html, $template_name = '') {
+  public static function writeToTcpdf($html, $template_name = '') {
     // Provide a default filename in case it was not passed.
     if (empty($template_name)) {
       $template_name = 'CiviReport';
@@ -219,7 +253,7 @@ class CRM_Customreports_Helper {
 
     // Add all the HTML pages to a PDF.
     // Get the "standard" PDF format.
-    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfFormatName);
+    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfDefaultFormatName);
     $layout_format = json_decode($format['value']);
 
     // Set the proper orientation expected by TCPDF based on the format.

@@ -18,6 +18,9 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
   // The class name of the report to use as a data source.
   protected $reportName = '';
 
+  // The name of the PDF format to use for this letter.
+  protected $pdfFormat = NULL;
+
   protected $context = 'membership';
 
   // Raw report data
@@ -146,6 +149,10 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
   public function loadReportData() {
     H::log();
 
+    if (empty($this->pdfFormat)) {
+      $this->pdfFormat = CRM_Customreports_Helper::$pdfDefaultFormatName;
+    }
+
     // Get the report instance
     $report_class = "CRM_Customreports_Form_Report_" . $this->reportName;
     $report = new $report_class;
@@ -193,9 +200,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
     $html = $this->getHtmlFromSmarty();
 
     // Write the pages to a PDF, send the PDF, and end.
-    //$this->writePDF($html);
-    CRM_Customreports_Helper::createCiviPDF($html, $this->templateName);
-
+    CRM_Customreports_Helper::writeToDompdf($html, $this->templateName, $this->pdfFormat);
   }
 
   /**
@@ -279,7 +284,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
   public function writePDF($html) {
     // Add all the HTML pages to a PDF.
     // Get the "standard" PDF format.
-    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfFormatName);
+    $format        = CRM_Core_BAO_PdfFormat::getPdfFormat('label', CRM_Customreports_Helper::$pdfDefaultFormatName);
     $layout_format = json_decode($format['value']);
 
     // Set the proper orientation expected by TCPDF based on the format.

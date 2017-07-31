@@ -29,6 +29,7 @@ function customreports_civicrm_xmlMenu(&$files) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function customreports_civicrm_install() {
+  CRM_Customreports_Helper::createPDFFormat();
   _customreports_civix_civicrm_install();
 }
 
@@ -47,6 +48,7 @@ function customreports_civicrm_postInstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
 function customreports_civicrm_uninstall() {
+  CRM_Customreports_Helper::destroyPDFFormat();
   _customreports_civix_civicrm_uninstall();
 }
 
