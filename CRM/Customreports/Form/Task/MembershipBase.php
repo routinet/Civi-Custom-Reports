@@ -19,7 +19,7 @@ class CRM_Customreports_Form_Task_MembershipBase extends CRM_Member_Form_Task {
   protected $reportName = '';
 
   // The name of the PDF format to use for this letter.
-  protected $pdfFormat = NULL;
+  protected $pdfFormat = 'CustomReports Membership Format';
 
   protected $context = 'membership';
 
