@@ -31,6 +31,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
   /**
    * To be overwritten by child classes for letter-specific Smarty token groups.
+   *
    * @param $smarty
    * @param $row
    */
@@ -65,12 +66,12 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     // since _contactIds is conveniently populated with soft contact IDs also.
     $tokenized = [
       'component' => [],
-      'contact' => CRM_Utils_Token::getTokenDetails($this->_contactIds, NULL, FALSE, FALSE)[0],
+      'contact'   => CRM_Utils_Token::getTokenDetails($this->_contactIds, NULL, FALSE, FALSE)[0],
     ];
 
     // For each contribution row...
     foreach ($this->report_data as $contribution_key => $contribution_row) {
-      H::log("one row=\n".var_export($contribution_row,1));
+      H::log("one row=\n" . var_export($contribution_row, 1));
       // Get some easy references to the ID fields.
       $contact_id   = $contribution_row['civicrm_contact_id'];
       $component_id = $contribution_row['civicrm_contribution_contribution_id'];
@@ -113,7 +114,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     if (isset($this->tokens['component']) && isset($this->tokens['contact'])) {
       // Create a smarty template.
-      $smarty           = CRM_Core_Smarty::singleton();
+      $smarty = CRM_Core_Smarty::singleton();
 
       // Prep the template for smarty parsing.
       $prep_template = preg_replace('/\\{([a-z0-9._]+)\\}/i', '{\\$$1}', $this->template['msg_html']);
@@ -132,7 +133,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
         $this->assignExtraTokens($smarty, $row);
 
         // TODO: For debugging
-        H::log("all tokens=\n".var_export($this->tokens,1));
+        H::log("all tokens=\n" . var_export($this->tokens, 1));
         // Add the Smarty-parsed template to the return array
         $ret[] = $smarty->fetch("string:" . $prep_template);
       }
@@ -149,7 +150,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     // Get the report instance
     $report_class = "CRM_Customreports_Form_Report_" . $this->reportName;
-    $report = new $report_class;
+    $report       = new $report_class;
 
     // Set the filter to use contribution IDs as passed to this form.
     $report->modifyParams('contribution_id_op', 'in');
@@ -171,6 +172,23 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
 
     // format result set.
     $report->formatDisplay($this->report_data, FALSE);
+
+    // Set the "Thank You" date for each contribution being processed.  Note
+    // that the field is at the contribution level, not the soft credit level.
+    $selected_ids = array_unique(
+      array_map(
+        function ($v, $k) {
+          return (int) $v['civicrm_contribution_contribution_id'];
+        },
+        $this->report_data
+      )
+    );
+
+    $sql = "UPDATE civicrm_contribution " .
+      "SET thankyou_date=NOW() " .
+      "WHERE id IN (" . implode(',', $selected_ids) . ") " .
+      "AND thankyou_date IS NULL";
+    CRM_Core_DAO::executeQuery($sql);
   }
 
   /**
@@ -244,7 +262,7 @@ class CRM_Customreports_Form_Task_ContributeBase extends CRM_Contribute_Form_Tas
     else {
       parent::setContactIDs();
     }
-    H::log(__FUNCTION__." set contacts to=\n".var_export($this->_contactIds,1));
+    H::log(__FUNCTION__ . " set contacts to=\n" . var_export($this->_contactIds, 1));
   }
 
   /**
