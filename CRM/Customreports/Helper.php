@@ -244,6 +244,10 @@ class CRM_Customreports_Helper {
    *
    * @param $html          array of rendered HTML pages.
    * @param $template_name Optional filename prefix, defaults to "CiviReport".
+   *
+   * @deprecated Use writeToDompdf() instead.  TCPDF does not support CSS
+   *             very well.  Dompdf allows for stylesheets, as well as
+   *             support for inline style declarations.
    */
   public static function writeToTcpdf($html, $template_name = '') {
     // Provide a default filename in case it was not passed.
