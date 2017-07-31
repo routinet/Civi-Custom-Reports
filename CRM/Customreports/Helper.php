@@ -8,7 +8,7 @@ define('CUSTOMREPORTS_EXT_NAME', 'com.crusonweb.nynjtc.customreports');
 
 // Switch for logging function
 // TODO: turn this off
-define('CUSTOMREPORTS_LOGGER', 1);
+define('CUSTOMREPORTS_LOGGER', 0);
 
 class CRM_Customreports_Helper {
 
